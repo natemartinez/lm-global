@@ -1,0 +1,55 @@
+.card {
+  display: flex;
+  background-color: #F4F0FA;
+  border-radius: 16px;
+  padding: 24px;
+  gap: 32px;
+  font-family: 'Manrope', 'Inter', sans-serif;
+}
+
+.chartContainer {
+  flex: 2;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.chartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.chartBody {
+  flex-grow: 1;
+  min-height: 200px;
+}
+
+.vitalsSummary {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+/* Tablet: stack vitals below chart, left-align the row */
+@media (max-width: 1024px) {
+  .card {
+    flex-direction: column;
+  }
+
+  .vitalsSummary {
+    flex-direction: row;
+    gap: 32px;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 768px) {
+  .vitalsSummary {
+    flex-direction: column;
+    align-items: center;
+  }
+}

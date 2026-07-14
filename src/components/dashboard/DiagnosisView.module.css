@@ -1,0 +1,142 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-card);
+}
+
+/* Chart loading fallback */
+.chartFallback {
+  aspect-ratio: 2 / 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+}
+
+/* CSS Grid Layout for Diagnosis Report */
+.metricsGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.metricBox {
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.respiratory {
+  background-color: #E0F3FA;
+}
+
+.temperature {
+  background-color: #FFE6E9;
+}
+
+.heartRate {
+  background-color: #FFE6F1;
+}
+
+.metricIcon {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  margin-bottom: 0.5rem;
+}
+
+.metricTitle {
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.metricValue {
+  font-size: 1.5rem;
+}
+
+.metricStatus {
+  font-size: 0.75rem;
+  color: #4a5568;
+  display: flex;
+  align-items: center;
+}
+
+/* Diagnostic List — scrollable viewport with sticky header */
+.diagnosticTableViewport {
+  max-height: 220px;
+  overflow-y: auto;
+  position: relative;
+}
+
+/* Custom scrollbar for Diagnostic List viewport */
+.diagnosticTableViewport::-webkit-scrollbar {
+  width: 6px;
+}
+
+.diagnosticTableViewport::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.diagnosticTableViewport::-webkit-scrollbar-thumb {
+  background-color: #EAEAEA;
+  border-radius: 10px;
+}
+
+.diagnosticTableViewport::-webkit-scrollbar-thumb:hover {
+  background-color: #C1C1C1;
+}
+
+.diagnosticTableViewport table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.diagnosticTableViewport th,
+.diagnosticTableViewport td {
+  text-align: left;
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 0.875rem;
+}
+
+.diagnosticTableViewport th {
+  position: sticky;
+  top: 0;
+  background-color: #f6f7f9;
+  font-weight: 600;
+  z-index: 2;
+}
+
+.diagnosticTableViewport th:first-child {
+  border-radius: 24px 0 0 24px;
+}
+
+.diagnosticTableViewport th:last-child {
+  border-radius: 0 24px 24px 0;
+}
+
+.emptyState {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+  padding: 2rem 0;
+}
+
+/* Only collapse to single column on mobile */
+@media (max-width: 768px) {
+  .metricsGrid {
+    grid-template-columns: 1fr;
+  }
+}

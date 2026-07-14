@@ -1,0 +1,415 @@
+Design Document: Tech Care Dashboard
+Overview
+A responsive, single-page medical dashboard application prioritizing accessibility, SEO, and performance through lazy loading. The layout strictly follows a three-column architecture wrapped in a main flex container, with CSS Grid specifically applied to the diagnosis report metrics for rigid box constraints.
+
+Layout Architecture (Based on Screenshot_2026-07-10_18-00-39.png)
+
+Header (Flexbox)
+
+Left: Brand container
+
+Center: Navigation menu (Overview, Patients, Schedule, Message, Transactions)
+
+Right: Provider profile and settings
+
+Main Content Layout (Flexbox)
+
+Left Column (Aside): Patient roster list with search functionality. Items use Flexbox for avatar and detail alignment.
+
+Center Column (Main):
+
+Diagnosis History: Contains a placeholder for the main chart.
+
+Vitals/Metrics Container (CSS Grid): A 3-column grid layout containing three distinct cards (Respiratory, Temperature, Heart Rate) to ensure structural integrity across viewport changes.
+
+Diagnostic List: A tabular data structure for condition, description, and status.
+
+Right Column (Aside):
+
+Patient Profile: Focused view of the selected patient's demographic and contact information.
+
+Lab Results: List of downloadable reports.
+
+Constraints Applied
+
+No specific numbers, logos, or graphics: Replaced with generic textual placeholders and CSS shape stand-ins.
+
+Semantic HTML & ADA: Uses <nav>, <main>, <aside>, <article>, <section>, and aria-labels.
+
+Performance: Core dashboard widgets are lazy-loaded via React Suspense.
+
+Foundational Code
+1. TypeScript Interfaces (types.ts)
+TypeScript
+export interface PatientData {
+  id: string;
+  name: string;
+  gender: string;
+  age: string;
+}
+
+export interface DashboardResponse {
+  patients: PatientData[];
+  diagnosisHistory: {
+    bloodPressure: string;
+    respiratoryRate: string;
+    temperature: string;
+    heartRate: string;
+  };
+  diagnosticList: Array<{
+    problem: string;
+    description: string;
+    status: string;
+  }>;
+  labResults: string[];
+}
+2. Mock Backend (Node/Express - server.ts)
+TypeScript
+import express from 'express';
+import cors from 'cors';
+import { DashboardResponse } from './types';
+
+const app = express();
+app.use(cors());
+
+// Single REST API endpoint
+app.get('/api/dashboard', (req, res) => {
+  const mockData: DashboardResponse = {
+    patients: [
+      { id: 'p1', name: '[Patient Name]', gender: '[Gender]', age: '[Age]' },
+      { id: 'p2', name: '[Patient Name]', gender: '[Gender]', age: '[Age]' },
+    ],
+    diagnosisHistory: {
+      bloodPressure: '[Value]',
+      respiratoryRate: '[Value]',
+      temperature: '[Value]',
+      heartRate: '[Value]',
+    },
+    diagnosticList: [
+      { problem: '[Condition]', description: '[Description]', status: '[Status]' },
+      { problem: '[Condition]', description: '[Description]', status: '[Status]' },
+    ],
+    labResults: ['[Lab Test A]', '[Lab Test B]', '[Lab Test C]']
+  };
+
+  res.json(mockData);
+});
+
+app.listen(3001, () => console.log('Mock API running on port 3001'));
+3. React Application (App.tsx)
+TypeScript
+import React, { useEffect, useState, Suspense, lazy } from 'react';
+import './App.css';
+import { DashboardResponse } from './types';
+
+// ADA/Performance Best Practice: Lazy Loading components
+const PatientList = lazy(() => import('./components/PatientList'));
+const DiagnosisView = lazy(() => import('./components/DiagnosisView'));
+const PatientProfile = lazy(() => import('./components/PatientProfile'));
+
+export default function App() {
+  const [data, setData] = useState<DashboardResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+
+  useEffect(() => {
+    // Fetching from the single REST API
+    fetch('http://localhost:3001/api/dashboard')
+      .then((res) => res.json())
+      .then((json: DashboardResponse) => {
+        setData(json);
+        setLoading(false);
+      })
+      .catch((err) => console.error('Error fetching data:', err));
+  }, []);
+
+  if (loading) return <div aria-live="polite">Loading dashboard...</div>;
+  if (!data) return <div aria-live="polite">Failed to load data.</div>;
+
+  return (
+    <div className="app-container">
+      {/* Header */}
+      <header className="app-header" role="banner">
+        <div className="brand-placeholder"><strong>[Brand Name]</strong></div>
+        <nav className="main-nav" aria-label="Main Navigation">
+          <ul>
+            <li>[Overview]</li>
+            <li className="active">[Patients]</li>
+            <li>[Schedule]</li>
+            <li>[Message]</li>
+            <li>[Transactions]</li>
+          </ul>
+        </nav>
+        <div className="user-profile-placeholder">
+          <div className="avatar-circle"></div>
+          <div>
+            <strong>[Provider Name]</strong>
+            <br />
+            <span>[Title]</span>
+          </div>
+        </div>
+      </header>
+
+      {/* Main Content Layout */}
+      <div className="dashboard-layout">
+        
+        {/* Left Column */}
+        <aside className="sidebar-left" aria-label="Patient Directory">
+          <Suspense fallback={<div>Loading Patients...</div>}>
+            <PatientList patients={data.patients} />
+          </Suspense>
+        </aside>
+
+        {/* Center Column */}
+        <main className="main-content" role="main">
+          <Suspense fallback={<div>Loading Diagnosis...</div>}>
+            <DiagnosisView history={data.diagnosisHistory} list={data.diagnosticList} />
+          </Suspense>
+        </main>
+
+        {/* Right Column */}
+        <aside className="sidebar-right" aria-label="Patient Profile and Lab Results">
+          <Suspense fallback={<div>Loading Profile...</div>}>
+            <PatientProfile labResults={data.labResults} />
+          </Suspense>
+        </aside>
+
+      </div>
+    </div>
+  );
+}
+4. Diagnosis View Component (components/DiagnosisView.tsx)
+Showing the specific Grid implementation requested for the report cards.
+
+TypeScript
+import React from 'react';
+
+export default function DiagnosisView({ history, list }: any) {
+  return (
+    <div className="diagnosis-container">
+      <section className="card">
+        <h2><strong>Diagnosis History</strong></h2>
+        <div className="chart-placeholder" aria-label="Blood pressure chart placeholder">
+          [Chart Data Placeholder]
+        </div>
+        
+        {/* CSS GRID Layout for Diagnosis Report as requested */}
+        <div className="diagnosis-metrics-grid">
+          <article className="metric-box box-respiratory">
+            <div className="icon-placeholder"></div>
+            <h3>Respiratory Rate</h3>
+            <strong>{history.respiratoryRate}</strong>
+            <p>[Status]</p>
+          </article>
+          
+          <article className="metric-box box-temperature">
+            <div className="icon-placeholder"></div>
+            <h3>Temperature</h3>
+            <strong>{history.temperature}</strong>
+            <p>[Status]</p>
+          </article>
+          
+          <article className="metric-box box-heart">
+            <div className="icon-placeholder"></div>
+            <h3>Heart Rate</h3>
+            <strong>{history.heartRate}</strong>
+            <p>[Status]</p>
+          </article>
+        </div>
+      </section>
+
+      <section className="card diagnostic-list-card">
+        <h2><strong>Diagnostic List</strong></h2>
+        <table className="diagnostic-table" aria-label="List of patient conditions">
+          <thead>
+            <tr>
+              <th scope="col">Problem/Diagnosis</th>
+              <th scope="col">Description</th>
+              <th scope="col">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {list.map((item: any, idx: number) => (
+              <tr key={idx}>
+                <td>{item.problem}</td>
+                <td>{item.description}</td>
+                <td>{item.status}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </section>
+    </div>
+  );
+}
+5. Stylesheet (App.css)
+CSS
+/* Base Resets for Accessibility and Consistency */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: #f6f7f9; /* Soft off-white background */
+  color: #0b0c10;
+}
+
+/* Typography wrappers */
+h2 { font-size: 1.25rem; margin-bottom: 1rem; }
+h3 { font-size: 1rem; font-weight: normal; margin-bottom: 0.5rem; }
+
+/* Main App Wrapper */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+/* Header Layout */
+.app-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  padding: 1rem 2rem;
+  border-radius: 4rem; /* Pill shape from Screenshot_2026-07-10_18-00-39.png */
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.main-nav ul {
+  display: flex;
+  list-style: none;
+  gap: 2rem;
+}
+
+.main-nav li {
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+}
+
+.main-nav li.active {
+  background-color: #01F0D0; /* Approximate brand color */
+  font-weight: bold;
+}
+
+/* 3-Column Flex Layout */
+.dashboard-layout {
+  display: flex;
+  gap: 1.5rem;
+  flex: 1;
+  /* Responsive wrap for mobile devices */
+  flex-wrap: wrap; 
+}
+
+/* Sidebar Columns */
+.sidebar-left {
+  flex: 0 0 280px; 
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar-right {
+  flex: 0 0 320px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Main Center Column */
+.main-content {
+  flex: 1; /* Takes up remaining space */
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Common Card Styles */
+.card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+}
+
+/* Diagnosis Grid Layout - Specifically constrained to Grid */
+.diagnosis-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.metric-box {
+  padding: 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.box-respiratory { background-color: #E0F3FA; }
+.box-temperature { background-color: #FFE6E9; }
+.box-heart       { background-color: #FFE6F1; }
+
+.chart-placeholder {
+  height: 250px;
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Placeholder Shapes (No Graphics Constraint) */
+.avatar-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #cccccc;
+}
+
+.icon-placeholder {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: #ffffff;
+  margin-bottom: 0.5rem;
+}
+
+/* Table layout for Diagnostic List */
+.diagnostic-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.diagnostic-table th, 
+.diagnostic-table td {
+  text-align: left;
+  padding: 1rem;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.diagnostic-table th {
+  background-color: #f6f7f9;
+  border-radius: 24px;
+}
+
+/* Mobile Responsiveness Media Query */
+@media (max-width: 1024px) {
+  .dashboard-layout {
+    flex-direction: column;
+  }
+  .sidebar-left, .sidebar-right, .main-content {
+    flex: 1 1 100%;
+  }
+  .diagnosis-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+}

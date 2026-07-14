@@ -1,0 +1,20 @@
+/* Sidebar Columns — grid children, no hardcoded widths */
+.sidebar-left,
+.sidebar-right,
+.main-content {
+  min-width: 0;
+}
+
+/* Main Center Column */
+.main-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Right Column — flex column so PatientProfile container fills height */
+.sidebar-right {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
