@@ -1,11 +1,15 @@
 /**
  * API client for the Tech Care Dashboard.
  *
- * Requests are proxied through our Express server, which handles
- * upstream authentication. No credentials are sent from the client.
+ * In development (VITE_USE_MOCK_DATA=true), requests go to the local
+ * Express mock server. In production, they go to the live API endpoint
+ * configured via VITE_API_BASE_URL.
  */
 
-const BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001';
+const USE_MOCK = import.meta.env.VITE_USE_MOCK_DATA === 'true';
+const BASE_URL = USE_MOCK
+  ? 'http://localhost:3001'
+  : (import.meta.env.VITE_API_BASE_URL || '/api');
 
 /**
  * Fetch wrapper with JSON content type.

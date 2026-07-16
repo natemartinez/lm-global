@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LM Ministries — Admin Panel</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Crimson+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0B0D13;
+            color: #e2e8f0;
+            min-height: 100vh;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+        /* Login */
+        #loginScreen {
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 24px;
+        }
+        .login-card {
+            background: #151923; border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 20px; padding: 40px; width: 100%; max-width: 400px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        }
+        .login-card h1 {
+            font-family: 'Crimson Pro', serif; font-size: 28px;
+            color: #D4AF37; text-align: center; margin-bottom: 4px;
+        }
+        .login-card p { text-align: center; color: #A0AAB5; font-size: 14px; margin-bottom: 28px; }
+        .login-card input {
+            width: 100%; padding: 14px 16px; border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1); background: #0B0D13;
+            color: #fff; font-size: 15px; outline: none; transition: border 0.2s;
+        }
+        .login-card input:focus { border-color: #0F4C81; }
+        .login-card button {
+            width: 100%; padding: 14px; border-radius: 12px;
+            background: #0F4C81; color: #fff; font-weight: 600; font-size: 15px;
+            border: none; cursor: pointer; transition: background 0.2s; margin-top: 16px;
+        }
+        .login-card button:hover { background: #1A6BB5; }
+        .login-error { color: #ef4444; font-size: 13px; text-align: center; margin-top: 12px; display: none; }
+
+        /* Dashboard */
+        #dashboardScreen { display: none; }
+        header.dash-header {
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 16px 0; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 24px;
+        }
+        header.dash-header h1 {
+            font-family: 'Crimson Pro', serif; font-size: 22px; color: #D4AF37;
+        }
+        header.dash-header .user-info {
+            display: flex; align-items: center; gap: 12px; font-size: 14px; color: #A0AAB5;
+        }
+        header.dash-header button {
+            padding: 8px 18px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.15);
+            background: transparent; color: #e2e8f0; cursor: pointer; font-size: 13px;
+            transition: all 0.2s;
+        }
+        header.dash-header button:hover { background: rgba(255,255,255,0.05); }
+
+        /* Stats */
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px; }
+        .stat-card {
+            background: #151923; border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 14px; padding: 20px;
+        }
+        .stat-card .label { font-size: 12px; color: #A0AAB5; text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-card .value { font-size: 28px; font-weight: 700; margin-top: 4px; }
+        .stat-card .value.pending { color: #f59e0b; }
+        .stat-card .value.approved { color: #22c55e; }
+        .stat-card .value.declined { color: #ef4444; }
+        .stat-card .value.total { color: #e2e8f0; }
+
+        /* Tabs */
+        .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+        .tabs button {
+            padding: 10px 20px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.08);
+            background: transparent; color: #A0AAB5; cursor: pointer; font-size: 13px; font-weight: 500;
+            transition: all 0.2s;
+        }
+        .tabs button.active { background: #0F4C81; color: #fff; border-color: #0F4C81; }
+        .tabs button:hover:not(.active) { background: rgba(255,255,255,0.05); }
+
+        /* Bookings Table */
+        .table-wrap {
+            background: #151923; border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; overflow: hidden; margin-bottom: 24px;
+        }
+        table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        thead { background: rgba(255,255,255,0.03); }
+        th { text-align: left; padding: 14px 16px; color: #A0AAB5; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 14px 16px; border-top: 1px solid rgba(255,255,255,0.04); }
+        tr:hover td { background: rgba(255,255,255,0.02); }
+        .status-badge {
+            display: inline-block; padding: 4px 12px; border-radius: 20px;
+            font-size: 11px; font-weight: 600;
+        }
+        .status-badge.Pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .status-badge.Approved { background: rgba(34,197,94,0.15); color: #22c55e; }
+        .status-badge.Declined { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .actions { display: flex; gap: 6px; }
+        .actions button {
+            padding: 6px 14px; border-radius: 8px; border: none; cursor: pointer;
+            font-size: 11px; font-weight: 600; transition: all 0.2s;
+        }
+        .btn-approve { background: rgba(34,197,94,0.15); color: #22c55e; }
+        .btn-approve:hover { background: #22c55e; color: #fff; }
+        .btn-decline { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .btn-decline:hover { background: #ef4444; color: #fff; }
+        .btn-pending { background: rgba(245,158,11,0.15); color: #f59e0b; }
+        .btn-pending:hover { background: #f59e0b; color: #fff; }
+        .empty-state { text-align: center; padding: 48px 24px; color: #A0AAB5; }
+        .empty-state i { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+
+        /* Date Blocking Section */
+        .block-section {
+            background: #151923; border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 16px; padding: 24px; margin-bottom: 24px;
+        }
+        .block-section h2 { font-size: 16px; margin-bottom: 16px; color: #e2e8f0; }
+        .block-form { display: flex; gap: 12px; flex-wrap: wrap; align-items: end; }
+        .block-form input, .block-form select {
+            padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.1);
+            background: #0B0D13; color: #fff; font-size: 13px; outline: none;
+        }
+        .block-form input:focus, .block-form select:focus { border-color: #0F4C81; }
+        .block-form button {
+            padding: 10px 20px; border-radius: 10px; border: none;
+            background: #0F4C81; color: #fff; font-weight: 600; font-size: 13px; cursor: pointer;
+            transition: background 0.2s;
+        }
+        .block-form button:hover { background: #1A6BB5; }
+        .block-form button.danger { background: rgba(239,68,68,0.15); color: #ef4444; }
+        .block-form button.danger:hover { background: #ef4444; color: #fff; }
+
+        .blocked-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+        .blocked-chip {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 12px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2);
+            border-radius: 20px; font-size: 12px; color: #fca5a5;
+        }
+        .blocked-chip button {
+            background: none; border: none; color: #ef4444; cursor: pointer;
+            font-size: 14px; padding: 0; line-height: 1;
+        }
+        .blocked-chip button:hover { color: #fff; }
+
+        /* Toast */
+        #toast {
+            position: fixed; bottom: 24px; right: 24px; z-index: 999;
+            transform: translateY(12px); opacity: 0; pointer-events: none;
+            transition: all 0.3s; max-width: 380px;
+            background: #151923; border: 1px solid rgba(255,255,255,0.1);
+            padding: 16px 20px; border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        #toast.show { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        #toast .title { font-weight: 600; font-size: 14px; }
+        #toast .msg { font-size: 13px; color: #A0AAB5; margin-top: 2px; }
+
+        @media (max-width: 768px) {
+            .table-wrap { overflow-x: auto; }
+            table { font-size: 12px; }
+            th, td { padding: 10px 12px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen">
+        <div class="login-card">
+            <h1>LM Ministries</h1>
+            <p>Admin Panel — Enter your secret key to manage bookings</p>
+            <input type="password" id="secretInput" placeholder="Enter admin secret key" autocomplete="off">
+            <button onclick="login()"><i class="fas fa-lock"></i> Unlock Dashboard</button>
+            <div class="login-error" id="loginError">Invalid secret key. Please try again.</div>
+        </div>
+    </div>
+
+    <!-- Dashboard Screen -->
+    <div id="dashboardScreen">
+        <div class="container">
+            <header class="dash-header">
+                <h1><i class="fas fa-calendar-check" style="color:#0F4C81; margin-right: 8px;"></i> Booking Management</h1>
+                <div class="user-info">
+                    <span><i class="fas fa-shield-alt"></i> Authenticated</span>
+                    <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+                </div>
+            </header>
+
+            <!-- Stats -->
+            <div class="stats-grid" id="statsGrid">
+                <div class="stat-card"><div class="label">Total Bookings</div><div class="value total" id="statTotal">—</div></div>
+                <div class="stat-card"><div class="label">Pending</div><div class="value pending" id="statPending">—</div></div>
+                <div class="stat-card"><div class="label">Approved</div><div class="value approved" id="statApproved">—</div></div>
+                <div class="stat-card"><div class="label">Declined</div><div class="value declined" id="statDeclined">—</div></div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="active" onclick="setFilter('')">All</button>
+                <button onclick="setFilter('Pending')">Pending</button>
+                <button onclick="setFilter('Approved')">Approved</button>
+                <button onclick="setFilter('Declined')">Declined</button>
+            </div>
+
+            <!-- Bookings Table -->
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Organization</th>
+                            <th>Host</th>
+                            <th>Email</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bookingsBody">
+                        <tr><td colspan="9" class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Loading bookings...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Date Blocking -->
+            <div class="block-section">
+                <h2><i class="fas fa-ban" style="color:#ef4444; margin-right: 8px;"></i> Block / Unblock Dates</h2>
+                <div class="block-form">
+                    <input type="date" id="blockDateInput">
+                    <input type="text" id="blockReasonInput" placeholder="Reason (optional)" style="flex:1; min-width:160px;">
+                    <button onclick="blockDate()"><i class="fas fa-lock"></i> Block Date</button>
+                </div>
+                <div class="blocked-list" id="blockedList">
+                    <span style="color:#A0AAB5; font-size:13px;">Loading blocked dates...</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast"><div class="title" id="toastTitle"></div><div class="msg" id="toastMsg"></div></div>
+
+    <script>
+        let token = localStorage.getItem('lm_admin_token') || '';
+        let currentFilter = '';
+
+        // --- Auth ---
+        function login() {
+            const secret = document.getElementById('secretInput').value.trim();
+            if (!secret) return;
+            token = secret;
+            localStorage.setItem('lm_admin_token', token);
+            document.getElementById('loginError').style.display = 'none';
+            loadDashboard();
+        }
+
+        function logout() {
+            token = '';
+            localStorage.removeItem('lm_admin_token');
+            document.getElementById('dashboardScreen').style.display = 'none';
+            document.getElementById('loginScreen').style.display = 'flex';
+            document.getElementById('secretInput').value = '';
+        }
+
+        // --- API helper ---
+        async function api(path, options = {}) {
+            const headers = { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' };
+            const resp = await fetch(path, { ...options, headers: { ...headers, ...options.headers } });
+            if (resp.status === 401) {
+                logout();
+                showToast('Session Expired', 'Please log in again.');
+                return null;
+            }
+            return resp.json();
+        }
+
+        // --- Dashboard ---
+        async function loadDashboard() {
+            document.getElementById('loginScreen').style.display = 'none';
+            document.getElementById('dashboardScreen').style.display = 'block';
+            await Promise.all([loadBookings(), loadBlockedDates()]);
+        }
+
+        async function loadBookings() {
+            const tbody = document.getElementById('bookingsBody');
+            tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><i class="fas fa-spinner fa-spin"></i><br>Loading bookings...</td></tr>';
+
+            const data = await api(`/api/admin/bookings${currentFilter ? `?status=${currentFilter}` : ''}`);
+            if (!data || !data.success) {
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><i class="fas fa-exclamation-triangle"></i><br>Failed to load bookings.</td></tr>';
+                return;
+            }
+
+            const bookings = data.bookings || [];
+            if (bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state"><i class="fas fa-inbox"></i><br>No bookings found.</td></tr>';
+            } else {
+                tbody.innerHTML = bookings.map(b => `
+                    <tr>
+                        <td style="color:#A0AAB5;">#${b.id}</td>
+                        <td><strong>${escapeHtml(b.organization_name)}</strong></td>
+                        <td>${escapeHtml(b.host_name)}</td>
+                        <td><a href="mailto:${escapeHtml(b.host_email)}" style="color:#0F4C81; text-decoration:none;">${escapeHtml(b.host_email)}</a></td>
+                        <td>${escapeHtml(b.engagement_type)}</td>
+                        <td>${escapeHtml(b.event_date)}</td>
+                        <td>${escapeHtml(b.event_time)}</td>
+                        <td><span class="status-badge ${b.status}">${b.status}</span></td>
+                        <td class="actions">
+                            ${b.status !== 'Approved' ? `<button class="btn-approve" onclick="updateStatus(${b.id}, 'Approved')"><i class="fas fa-check"></i> Approve</button>` : ''}
+                            ${b.status !== 'Declined' ? `<button class="btn-decline" onclick="updateStatus(${b.id}, 'Declined')"><i class="fas fa-times"></i> Decline</button>` : ''}
+                            ${b.status !== 'Pending' ? `<button class="btn-pending" onclick="updateStatus(${b.id}, 'Pending')"><i class="fas fa-undo"></i> Reset</button>` : ''}
+                        </td>
+                    </tr>
+                `).join('');
+            }
+
+            // Update stats
+            const all = await api('/api/admin/bookings');
+            if (all && all.success) {
+                const allBookings = all.bookings || [];
+                document.getElementById('statTotal').textContent = allBookings.length;
+                document.getElementById('statPending').textContent = allBookings.filter(b => b.status === 'Pending').length;
+                document.getElementById('statApproved').textContent = allBookings.filter(b => b.status === 'Approved').length;
+                document.getElementById('statDeclined').textContent = allBookings.filter(b => b.status === 'Declined').length;
+            }
+        }
+
+        async function updateStatus(id, status) {
+            const data = await api(`/api/admin/bookings/${id}`, {
+                method: 'PATCH',
+                body: JSON.stringify({ status })
+            });
+            if (data && data.success) {
+                showToast('Status Updated', `Booking #${id} ${status.toLowerCase()}.`);
+                await Promise.all([loadBookings(), loadBlockedDates()]);
+            } else {
+                showToast('Error', data?.message || 'Failed to update status.');
+            }
+        }
+
+        function setFilter(filter) {
+            currentFilter = filter;
+            document.querySelectorAll('.tabs button').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tabs button').forEach(btn => {
+                if ((filter === '' && btn.textContent.trim() === 'All') || btn.textContent.trim() === filter) {
+                    btn.classList.add('active');
+                }
+            });
+            loadBookings();
+        }
+
+        // --- Date Blocking ---
+        async function loadBlockedDates() {
+            const container = document.getElementById('blockedList');
+            const data = await api('/api/admin/block-date');
+            if (!data || !data.success) {
+                container.innerHTML = '<span style="color:#A0AAB5; font-size:13px;">Could not load blocked dates.</span>';
+                return;
+            }
+
+            const blocked = data.blocked_dates || [];
+            if (blocked.length === 0) {
+                container.innerHTML = '<span style="color:#A0AAB5; font-size:13px;">No dates are currently blocked.</span>';
+                return;
+            }
+
+            container.innerHTML = blocked.map(b => `
+                <div class="blocked-chip" data-id="${b.id}">
+                    <span>${formatDate(b.blocked_date)}${b.reason ? ` <span style="color:#A0AAB5; font-size:11px;">(${escapeHtml(b.reason)})</span>` : ''}</span>
+                    <button onclick="unblockDate(${b.id})" title="Unblock this date">&times;</button>
+                </div>
+            `).join('');
+        }
+
+        async function blockDate() {
+            const dateInput = document.getElementById('blockDateInput');
+            const reasonInput = document.getElementById('blockReasonInput');
+            const date = dateInput.value;
+            const reason = reasonInput.value.trim();
+
+            if (!date) {
+                showToast('Missing Date', 'Please select a date to block.');
+                return;
+            }
+
+            const data = await api('/api/admin/block-date', {
+                method: 'POST',
+                body: JSON.stringify({ date, reason })
+            });
+
+            if (data && data.success) {
+                showToast('Date Blocked', `${formatDate(date)} has been blocked.`);
+                dateInput.value = '';
+                reasonInput.value = '';
+                await loadBlockedDates();
+            } else {
+                showToast('Error', data?.message || 'Failed to block date.');
+            }
+        }
+
+        async function unblockDate(id) {
+            const data = await api(`/api/admin/block-date?id=${id}`, { method: 'DELETE' });
+            if (data && data.success) {
+                showToast('Date Unblocked', 'The date has been unblocked successfully.');
+                await loadBlockedDates();
+            } else {
+                showToast('Error', data?.message || 'Failed to unblock date.');
+            }
+        }
+
+        // --- Helpers ---
+        function formatDate(dateStr) {
+            const d = new Date(dateStr + 'T12:00:00');
+            return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' });
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function showToast(title, msg) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toastTitle').textContent = title;
+            document.getElementById('toastMsg').textContent = msg;
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 4000);
+        }
+
+        // --- Init ---
+        if (token) {
+            loadDashboard();
+        }
+    </script>
+</body>
+</html>

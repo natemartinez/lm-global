@@ -1,0 +1,17 @@
+{
+  "name": "lm-live-site",
+  "pages_build_output_dir": ".",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "lm-ministries-db",
+      "database_id": "8ceeae12-549e-4c4a-81a5-48c30bc170e9"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "BOOKS_BUCKET",
+      "bucket_name": "lm-books-pdfs"
+    }
+  ]
+}

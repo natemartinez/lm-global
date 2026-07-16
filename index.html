@@ -1,14 +1,1710 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Tech Care Dashboard - A responsive medical dashboard application" />
-    <title>Tech Care Dashboard</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html lang="en" class="dark scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LM Ministries - Apostle Lee Martinez</title>
+    
+    <!-- Google Fonts: Crimson Pro for reverent typography, Inter for legible user interface controls -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght=0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome for Social Media Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind Custom Configuration aligning to the Blue/Gray/Gold palette of LM Ministries logo -->
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        lm: {
+                            deep: '#0B0D13',       // Base midnight blue/dark gray
+                            slate: '#161A24',      // Card structures and panel layers
+                            blue: '#0F4C81',       // Prominent blue matching Logo
+                            blueHover: '#0D3F6B',
+                            silver: '#A0AAB5',     // Cool silver gray for subtitles and boundaries
+                            gold: '#D4AF37'        // Elegant secondary gold accent
+                        }
+                    },
+                    fontFamily: {
+                        serif: ['"Crimson Pro"', 'serif'],
+                        sans: ['"Inter"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        .glass-panel {
+            background: rgba(22, 26, 36, 0.55);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .light .glass-panel {
+            background: rgba(255, 255, 255, 0.75);
+            border: 1px solid rgba(15, 76, 129, 0.1);
+        }
+
+        .ambient-glow-left {
+            position: absolute;
+            top: -10%;
+            left: -5%;
+            width: 55vw;
+            height: 55vw;
+            background: radial-gradient(circle, rgba(15, 76, 129, 0.12) 0%, rgba(160, 170, 181, 0.04) 50%, rgba(0,0,0,0) 100%);
+            border-radius: 50%;
+            filter: blur(90px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .ambient-glow-right {
+            position: absolute;
+            bottom: -5%;
+            right: -5%;
+            width: 45vw;
+            height: 45vw;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.06) 0%, rgba(15, 76, 129, 0.03) 60%, rgba(0,0,0,0) 100%);
+            border-radius: 50%;
+            filter: blur(100px);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ===== LIGHT MODE COMPREHENSIVE OVERRIDES ===== */
+        /* When .light class is on <html>, override all dark-themed elements */
+
+        /* Social hub cards */
+        .light [class*="bg-lm-deep/40"] {
+            background: rgba(255,255,255,0.7) !important;
+            border-color: rgba(15,76,129,0.08) !important;
+        }
+        .light [class*="bg-lm-deep/40"] h3 {
+            color: #1e293b !important;
+        }
+        .light [class*="bg-lm-deep/40"] p {
+            color: #64748b !important;
+        }
+
+        /* Sermon items */
+        .light .sermon-item {
+            background: rgba(255,255,255,0.7) !important;
+            border-color: rgba(15,76,129,0.08) !important;
+        }
+        .light .sermon-item:hover {
+            background: rgba(255,255,255,0.9) !important;
+        }
+        .light .sermon-item h3 {
+            color: #1e293b !important;
+        }
+        .light .sermon-item .text-lm-silver {
+            color: #64748b !important;
+        }
+
+        /* Spotify embed panel */
+        .light [class*="bg-lm-slate"][class*="rounded-3xl"][class*="h-[520px]"] {
+            background: rgba(255,255,255,0.85) !important;
+            border-color: rgba(15,76,129,0.08) !important;
+        }
+        .light [class*="bg-lm-slate"][class*="rounded-3xl"][class*="h-[520px]"] h4 {
+            color: #1e293b !important;
+        }
+        .light [class*="bg-lm-slate"][class*="rounded-3xl"][class*="h-[520px]"] [class*="border-b"] {
+            border-color: rgba(15,76,129,0.1) !important;
+        }
+        .light [class*="bg-lm-slate"][class*="rounded-3xl"][class*="h-[520px]"] button {
+            background: rgba(15,76,129,0.06) !important;
+            border-color: rgba(15,76,129,0.1) !important;
+            color: #1e293b !important;
+        }
+
+        /* Books section cards */
+        .light .book-container {
+            background: rgba(255,255,255,0.8) !important;
+            border-color: rgba(15,76,129,0.08) !important;
+        }
+        .light .book-container h3 {
+            color: #1e293b !important;
+        }
+        .light .book-container p {
+            color: #64748b !important;
+        }
+        .light .book-container [class*="text-lm-silver"] {
+            color: #64748b !important;
+        }
+
+        /* Booking calendar panel */
+        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] {
+            background: rgba(255,255,255,0.85) !important;
+            border-color: rgba(15,76,129,0.08) !important;
+        }
+        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] h3 {
+            color: #1e293b !important;
+        }
+        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] [class*="text-lm-silver"] {
+            color: #64748b !important;
+        }
+        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] [class*="border-t"],
+        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] [class*="border-b"] {
+            border-color: rgba(15,76,129,0.1) !important;
+        }
+        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] button[class*="bg-white"] {
+            background: rgba(15,76,129,0.06) !important;
+            color: #64748b !important;
+        }
+        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] button[class*="bg-white"]:hover {
+            color: #1e293b !important;
+        }
+
+        /* Booking form panel */
+        .light [class*="bg-lm-slate/30"][class*="rounded-3xl"] {
+            background: rgba(255,255,255,0.8) !important;
+            border-color: rgba(15,76,129,0.08) !important;
+        }
+
+        /* Form inputs */
+        .light input[class*="bg-lm-deep"],
+        .light select[class*="bg-lm-deep"],
+        .light textarea[class*="bg-lm-deep"] {
+            background: #ffffff !important;
+            border-color: rgba(15,76,129,0.15) !important;
+            color: #1e293b !important;
+        }
+        .light input[class*="bg-lm-deep"]::placeholder,
+        .light textarea[class*="bg-lm-deep"]::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        /* Calendar days */
+        .light .calendar-day:not(.empty-day) {
+            color: #1e293b !important;
+        }
+        .light .calendar-day.empty-day {
+            color: transparent !important;
+        }
+
+        /* Time slot buttons */
+        .light .slot-btn {
+            background: rgba(255,255,255,0.7) !important;
+            border-color: rgba(15,76,129,0.15) !important;
+            color: #1e293b !important;
+        }
+        .light .slot-btn:hover {
+            border-color: #0F4C81 !important;
+            background: rgba(15,76,129,0.08) !important;
+        }
+
+        /* Filter bar */
+        .light [class*="bg-lm-deep/50"][class*="rounded-full"] {
+            background: rgba(255,255,255,0.7) !important;
+            border-color: rgba(15,76,129,0.08) !important;
+        }
+        .light [class*="bg-lm-deep/50"][class*="rounded-full"] button:not([class*="bg-lm-blue"]) {
+            color: #64748b !important;
+        }
+        .light [class*="bg-lm-deep/50"][class*="rounded-full"] button:not([class*="bg-lm-blue"]):hover {
+            color: #1e293b !important;
+        }
+
+        /* Footer */
+        .light footer[class*="bg-lm-deep"] {
+            background: #f1f5f9 !important;
+            border-color: rgba(15,76,129,0.08) !important;
+        }
+        .light footer [class*="text-white"] {
+            color: #1e293b !important;
+        }
+        .light footer [class*="text-lm-silver"] {
+            color: #64748b !important;
+        }
+        .light footer [class*="bg-white/5"] {
+            background: rgba(15,76,129,0.08) !important;
+        }
+        .light footer [class*="border-white/10"] {
+            border-color: rgba(15,76,129,0.1) !important;
+        }
+
+        /* Toast notification */
+        .light #toastNotification {
+            background: #ffffff !important;
+            border-color: rgba(15,76,129,0.2) !important;
+        }
+        .light #toastNotification h4 {
+            color: #1e293b !important;
+        }
+        .light #toastNotification [class*="text-lm-silver"] {
+            color: #64748b !important;
+        }
+
+        /* Profile badge */
+        .light [class*="absolute"][class*="-bottom-4"][class*="right-4"][class*="bg-lm-slate"] {
+            background: rgba(255,255,255,0.9) !important;
+            border-color: rgba(15,76,129,0.1) !important;
+        }
+        .light [class*="absolute"][class*="-bottom-4"][class*="right-4"][class*="bg-lm-slate"] [class*="text-white"] {
+            color: #1e293b !important;
+        }
+
+        /* Section backgrounds */
+        .light section[class*="bg-lm-slate/20"] {
+            background: rgba(241,245,249,0.6) !important;
+        }
+        .light section[class*="bg-lm-deep"] {
+            background: #f8fafc !important;
+        }
+        .light section[class*="bg-lm-slate/10"] {
+            background: rgba(241,245,249,0.4) !important;
+        }
+
+        /* Scroll down arrow */
+        .light svg[class*="text-white/40"] {
+            color: rgba(15,76,129,0.3) !important;
+        }
+        .light svg[class*="text-white/40"]:hover {
+            color: #0F4C81 !important;
+        }
+
+        /* Calendar Hover and Interactive States */
+        .calendar-day:not(.empty-day):hover {
+            background-color: rgba(15, 76, 129, 0.2);
+            border-color: #0F4C81;
+        }
+
+        /* Active Sermon List Highlight classes */
+        .sermon-active-border {
+            border-color: #0F4C81 !important;
+            background-color: rgba(15, 76, 129, 0.1) !important;
+        }
+
+        /* Book 3D Hover effect with shadows */
+        .book-container {
+            perspective: 1000px;
+        }
+        .book-card-3d {
+            transition: transform 0.5s ease, box-shadow 0.5s ease;
+            transform-style: preserve-3d;
+        }
+        .book-card-3d:hover {
+            transform: rotateY(-8deg) translateY(-8px);
+            box-shadow: 0 30px 45px rgba(15, 76, 129, 0.15);
+        }
+
+        /* ===== MODAL OVERLAY ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            z-index: 200;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-content {
+            background: #151923;
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            padding: 32px;
+            width: 100%;
+            max-width: 480px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 60px rgba(0,0,0,0.6);
+        }
+        .modal-content h2 {
+            font-family: 'Crimson Pro', serif;
+            font-size: 24px;
+            color: #D4AF37;
+            margin-bottom: 4px;
+        }
+        .modal-content .subtitle {
+            color: #A0AAB5;
+            font-size: 13px;
+            margin-bottom: 24px;
+        }
+        .modal-close {
+            float: right;
+            background: none;
+            border: none;
+            color: #A0AAB5;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            line-height: 1;
+        }
+        .modal-close:hover { color: #fff; }
+        .modal-content label {
+            display: block;
+            font-size: 11px;
+            color: #A0AAB5;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+        .modal-content input[type="email"],
+        .modal-content input[type="password"],
+        .modal-content input[type="text"] {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: #0B0D13;
+            color: #fff;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+            margin-bottom: 16px;
+        }
+        .modal-content input:focus {
+            border-color: #0F4C81;
+        }
+        .modal-content .btn-primary {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            background: #0F4C81;
+            color: #fff;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .modal-content .btn-primary:hover { background: #1A6BB5; }
+        .modal-content .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .modal-content .switch-link {
+            text-align: center;
+            font-size: 13px;
+            color: #A0AAB5;
+            margin-top: 16px;
+        }
+        .modal-content .switch-link a {
+            color: #0F4C81;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 600;
+        }
+        .modal-content .switch-link a:hover { text-decoration: underline; }
+        .modal-content .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+        .modal-content .checkbox-row input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #0F4C81;
+        }
+        .modal-content .checkbox-row label {
+            margin-bottom: 0;
+            text-transform: none;
+            letter-spacing: normal;
+            font-weight: 400;
+            font-size: 13px;
+            color: #e2e8f0;
+        }
+        .modal-error {
+            color: #ef4444;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 12px;
+            display: none;
+        }
+        .light .modal-content {
+            background: #ffffff;
+            border-color: rgba(15,76,129,0.15);
+        }
+        .light .modal-content h2 { color: #0F4C81; }
+        .light .modal-content input {
+            background: #f8fafc;
+            border-color: rgba(15,76,129,0.15);
+            color: #1e293b;
+        }
+        .light .modal-content .checkbox-row label { color: #1e293b; }
+
+        /* ===== MAILING LIST SECTION ===== */
+        .mailing-input {
+            background: rgba(11, 13, 19, 0.6);
+            border: 1px solid rgba(255,255,255,0.1);
+            color: #fff;
+            padding: 14px 18px;
+            border-radius: 30px;
+            font-size: 14px;
+            outline: none;
+            transition: border 0.2s;
+            min-width: 0;
+            flex: 1;
+        }
+        .mailing-input:focus { border-color: #0F4C81; }
+        .mailing-input::placeholder { color: #64748b; }
+        .light .mailing-input {
+            background: rgba(255,255,255,0.8);
+            border-color: rgba(15,76,129,0.15);
+            color: #1e293b;
+        }
+
+        /* Light mode: mailing list section */
+        .light #mailing {
+            background: rgba(241,245,249,0.5) !important;
+        }
+        .light #mailing h2 {
+            color: #1e293b !important;
+        }
+        .light #mailing p {
+            color: #64748b !important;
+        }
+        .light #mailing .mailing-input {
+            background: #ffffff !important;
+            border-color: rgba(15,76,129,0.15) !important;
+            color: #1e293b !important;
+        }
+        .light #mailing .mailing-input::placeholder {
+            color: #94a3b8 !important;
+        }
+        .light #mailing #mailingStatus.text-green-400 {
+            color: #16a34a !important;
+        }
+        .light #mailing #mailingStatus.text-red-400 {
+            color: #dc2626 !important;
+        }
+
+        /* Light mode: modal overlays */
+        .light .modal-overlay {
+            background: rgba(255,255,255,0.8) !important;
+        }
+        .light .modal-content {
+            background: #ffffff !important;
+            border-color: rgba(15,76,129,0.15) !important;
+        }
+        .light .modal-content h2 {
+            color: #0F4C81 !important;
+        }
+        .light .modal-content .subtitle {
+            color: #64748b !important;
+        }
+        .light .modal-content input[type="email"],
+        .light .modal-content input[type="password"],
+        .light .modal-content input[type="text"] {
+            background: #f8fafc !important;
+            border-color: rgba(15,76,129,0.15) !important;
+            color: #1e293b !important;
+        }
+        .light .modal-content .checkbox-row label {
+            color: #1e293b !important;
+        }
+        .light .modal-close {
+            color: #64748b !important;
+        }
+        .light .modal-close:hover {
+            color: #1e293b !important;
+        }
+        .light .modal-content .switch-link {
+            color: #64748b !important;
+        }
+    </style>
+</head>
+<body class="bg-lm-deep text-gray-200 font-sans antialiased selection:bg-lm-blue/30 selection:text-white transition-colors duration-300 dark:bg-lm-deep light:bg-gray-50 light:text-gray-800">
+
+<header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent py-4" id="mainHeader">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
+        
+        <!-- Left Side: Actual Logo (LM Global Cover Photo_2.jpg) with clean title and no subtitle -->
+        <a href="#home" class="flex items-center gap-3 group">
+            <div class="w-12 h-12 flex items-center justify-center transition-transform group-hover:scale-105">
+                <!-- Site header logo -->
+                <img src="src/assets/site-header-logo.png" alt="LM Ministries Logo" class="w-full h-full object-contain">
+            </div>
+        </a>
+
+        <!-- Right Side: Clean theme adjustment and Direct CTA link to Speaking booking -->
+        <div class="flex items-center gap-4">
+            
+            <!-- Dark / Light Theme Mode Switcher -->
+            <button onclick="toggleTheme()" class="p-2.5 text-white/90 dark:text-white/90 light:text-gray-700 hover:text-lm-gold rounded-full hover:bg-white/5 transition-all" aria-label="Toggle Theme Mode">
+                <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+                </svg>
+            </button>
+
+            <!-- Preaching speaking link -->
+            <a href="#booking" class="inline-flex items-center px-5 py-2 bg-lm-blue hover:bg-lm-blueHover text-sm font-semibold text-white rounded-full shadow-lg shadow-lm-blue/10 hover:scale-[1.03] transition-all">
+                For Bookings
+            </a>
+        </div>
+    </div>
+</header>
+
+<section id="home" class="relative min-h-[105vh] flex items-center justify-center overflow-hidden pt-24 pb-16">
+    <div class="absolute inset-0 z-0">
+        <!-- Main Collage Cover Photo -->
+        <img src="LM Global Cover Photo (1).png" alt="LM Global Collage Cover Photo" class="w-full h-full object-cover object-center filter opacity-40 brightness-[0.25] saturate-[0.8]">
+        <!-- Gradient layers matching design layout -->
+        <div class="absolute inset-0 bg-gradient-to-t from-lm-deep via-lm-deep/70 to-transparent"></div>
+        <div class="absolute inset-0 bg-gradient-to-r from-lm-deep/85 via-transparent to-lm-deep/85"></div>
+    </div>
+
+    <!-- Radiant Ambient Blue Glow nodes behind hero details -->
+    <div class="ambient-glow-left"></div>
+    <div class="ambient-glow-right"></div>
+
+    <div class="relative z-10 max-w-5xl mx-auto px-6 text-center mt-12">
+        
+        <!-- Transparent Brand Mark placed elegantly above title -->
+        <!-- Big elegant main serif typography matching the visual flow -->
+        <h1 class="font-serif text-5xl md:text-7xl lg:text-8xl font-medium tracking-tight text-white mb-6 drop-shadow-sm">
+            Welcome to <br> LM Ministries
+        </h1>
+
+        <p class="max-w-2xl mx-auto text-sm md:text-lg text-white/80 dark:text-white/80 light:text-gray-200 leading-relaxed mb-10 drop-shadow-sm">
+            Raising a global generation of apostolic leaders. Apostle Lee Martinez carries a heavy mantle to ignite global believers, align strategic leadership, and unlock the prophetic voice across the nations.
+        </p>
+
+        <!-- CTA Buttons matching design rules -->
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+            <!-- Book Now speaking request -->
+            <a href="#booking" class="w-full sm:w-auto px-8 py-4 bg-lm-blue hover:bg-lm-blueHover text-white font-semibold rounded-full shadow-lg shadow-lm-blue/20 hover:scale-[1.02] transition-all">
+                Invite Apostle Lee to Speak
+            </a>
+            
+            <!-- Listen Broadcasts (Spotify/Audio Player shortcut) -->
+            <a href="#broadcasts" class="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-4 border border-white/30 hover:border-white/60 text-white font-semibold rounded-full backdrop-blur-sm hover:bg-white/5 transition-all">
+                <i class="fa-brands fa-spotify text-green-400 text-lg"></i>
+                Listen Broadcasts
+            </a>
+        </div>
+
+        <!-- Floating Welcome details stylized as a floating platform (Active Social Hub) -->
+        <div class="max-w-5xl mx-auto glass-panel rounded-2xl p-6 md:p-8 shadow-2xl relative">
+            <h2 class="text-xs tracking-[0.25em] uppercase text-white/60 dark:text-white/60 light:text-gray-800 font-bold mb-6">
+                Active Social Hub
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+                
+                <!-- Spotify Card Link -->
+                <a href="https://open.spotify.com/show/0KdGx6bE5KpdAskhmyBy04" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[9px] uppercase font-bold tracking-widest text-green-400">Weekly Podcast</span>
+                        <i class="fa-brands fa-spotify text-green-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">Apostolic Voice</h3>
+                        <p class="text-xs text-lm-silver leading-relaxed">Listen to weekly audio releases and apostolic decrees on Spotify.</p>
+                    </div>
+                </a>
+
+                <!-- YouTube Card Link -->
+                <a href="https://youtube.com" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[9px] uppercase font-bold tracking-widest text-red-500">Video Broadcasts</span>
+                        <i class="fa-brands fa-youtube text-red-500 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">LM Global YouTube</h3>
+                        <p class="text-xs text-lm-silver leading-relaxed">Watch regional crusades, leadership schools, and live streams.</p>
+                    </div>
+                </a>
+
+                <!-- Instagram Card Link -->
+                <a href="https://instagram.com" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[9px] uppercase font-bold tracking-widest text-pink-400">Daily Updates</span>
+                        <i class="fa-brands fa-instagram text-pink-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">@ApostleLee</h3>
+                        <p class="text-xs text-lm-silver leading-relaxed">Receive daily prophetic quote keys, updates, and scriptural slides.</p>
+                    </div>
+                </a>
+
+                <!-- TikTok Card Link -->
+                <a href="https://tiktok.com" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="text-[9px] uppercase font-bold tracking-widest text-cyan-400">Short Messages</span>
+                        <i class="fa-brands fa-tiktok text-cyan-400 text-xl"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">TikTok Insights</h3>
+                        <p class="text-xs text-lm-silver leading-relaxed">Watch concise, dynamic 60-second prophetic declarations.</p>
+                    </div>
+                </a>
+
+            </div>
+        </div>
+
+        <!-- Bounce arrow down transition indicators -->
+        <div class="flex justify-center mt-12 animate-bounce">
+            <a href="#about" aria-label="Scroll Down">
+                <svg class="w-6 h-6 text-white/40 hover:text-white transition-colors" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                </svg>
+            </a>
+        </div>
+
+    </div>
+</section>
+
+<section id="about" class="py-24 relative overflow-hidden bg-lm-slate/20">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            <div class="lg:col-span-6 flex flex-col gap-4">
+                <span class="text-xs tracking-[0.25em] uppercase text-lm-blue font-bold">THE MAN & THE MISSION</span>
+                <h2 class="font-serif text-4xl md:text-5xl text-white dark:text-white light:text-gray-900 font-bold leading-tight">
+                    Apostle Lee Martinez
+                </h2>
+                <p class="text-lm-silver text-sm md:text-base leading-relaxed mt-2">
+                    Apostle Lee Martinez is a seasoned, apostolic father called to set in order local church bodies and mobilize kingdom leaders globally. Grounded in biblical authority, dynamic revelation, and direct spiritual governance, his ministry breaks barriers to unlock the supernatural lifestyle.
+                </p>
+                <p class="text-lm-silver text-sm md:text-base leading-relaxed">
+                    With decades of pastoral wisdom, global crusades, and media influence, Apostle Lee equips modern apostles, prophets, evangelists, and shepherds to run with their native assignments without fear.
+                </p>
+                
+            </div>
+
+            <!-- Profile Badge Showcase Section incorporating circular image 1783018880302.png -->
+            <div class="lg:col-span-6 flex justify-center relative">
+                <!-- Background decorative shapes -->
+                <div class="absolute inset-0 bg-radial-gradient from-lm-blue/20 to-transparent blur-2xl z-0 rounded-full w-80 h-80 mx-auto"></div>
+                <div class="relative z-10 group">
+                    <div class="w-72 h-72 md:w-96 md:h-96 rounded-full overflow-hidden border-4 border-lm-blue/30 shadow-2xl transition-all duration-500 group-hover:border-lm-gold">
+                        <!-- circular cover photo badge styled with custom crop-alignment to preserve focus -->
+                        <img src="1783018880302.png" alt="Apostle Lee Martinez Profile Circle" class="w-full h-full object-cover" style="object-position: center 15%;" onerror="this.src='LM Global Cover Photo.png'">
+                    </div>
+                    <!-- Absolute overlay badge with statistics -->
+                    <div class="absolute -bottom-4 right-4 bg-lm-slate border border-white/10 px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        <span class="text-xs font-semibold text-white">Active Global Outreach</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="broadcasts" class="py-24 bg-lm-slate/20 relative">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        
+        <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-16">
+            <div>
+                <span class="text-xs tracking-[0.25em] uppercase text-lm-blue font-bold">LATEST MEDIA BROADCASTS</span>
+                <h2 class="font-serif text-4xl md:text-5xl text-white dark:text-white light:text-gray-900 font-bold mt-2">Freedom Sermons</h2>
+                <p class="text-lm-silver text-sm mt-2">Explore weekly audio broadcasts, leadership briefings, and prophetic declarations directly on Spotify.</p>
+            </div>
+            
+            <!-- Category Filter Buttons -->
+            <div class="flex flex-wrap gap-2.5 mt-6 md:mt-0 bg-lm-deep/50 p-1.5 rounded-full border border-white/5">
+                <button onclick="filterSermons('all')" id="filter-all" class="px-5 py-2 rounded-full text-xs font-semibold bg-lm-blue text-white transition-all shadow-md">All Media</button>
+                <button onclick="filterSermons('apostolic')" id="filter-apostolic" class="px-5 py-2 rounded-full text-xs font-semibold text-lm-silver hover:text-white transition-all">Apostolic Order</button>
+                <button onclick="filterSermons('prophetic')" id="filter-prophetic" class="px-5 py-2 rounded-full text-xs font-semibold text-lm-silver hover:text-white transition-all">Prophetic Decrees</button>
+                <button onclick="filterSermons('leadership')" id="filter-leadership" class="px-5 py-2 rounded-full text-xs font-semibold text-lm-silver hover:text-white transition-all">Leadership Class</button>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            <!-- Left: Playable Audio List linked directly to Spotify Iframe actions -->
+            <div class="lg:col-span-7 space-y-4" id="sermonsContainer">
+                
+                <!-- Sermon Item 1 (Linked to Live Spotify Episode ID) -->
+                <!-- SPOTIFY EMED NOTE: Replace the dataset spotify-episode attribute with your specific Spotify track/episode ID from your podcast dashboard -->
+                <div class="sermon-item bg-lm-slate/60 hover:bg-lm-slate border border-white/5 rounded-2xl p-5 flex items-center justify-between gap-4 transition-all duration-300 cursor-pointer" 
+                     id="item-sermon1" data-series="apostolic" data-spotify-episode="5vM1fOOn88g6k067YQpL3A" onclick="loadSpotifySermon('5vM1fOOn88g6k067YQpL3A', 'item-sermon1')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-lm-blue/10 rounded-xl flex items-center justify-center text-lm-blue hover:scale-105 transition-all">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-lm-blue uppercase font-bold tracking-wider">Apostolic Alignment</span>
+                            <h3 class="font-serif text-lg font-medium text-white dark:text-white light:text-gray-900 mt-0.5">The Structure of Apostolic Governance</h3>
+                            <p class="text-xs text-lm-silver mt-1">Scripture: Ephesians 4:11-12 • Click to play episode</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-lm-silver hidden sm:block">45:12</span>
+                </div>
+
+                <!-- Sermon Item 2 (Linked to Live Spotify Episode ID) -->
+                <div class="sermon-item bg-lm-slate/60 hover:bg-lm-slate border border-white/5 rounded-2xl p-5 flex items-center justify-between gap-4 transition-all duration-300 cursor-pointer" 
+                     id="item-sermon2" data-series="prophetic" data-spotify-episode="2hGjTfH4L3N8G6P3VpKZ7w" onclick="loadSpotifySermon('2hGjTfH4L3N8G6P3VpKZ7w', 'item-sermon2')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-lm-blue/10 rounded-xl flex items-center justify-center text-lm-blue hover:scale-105 transition-all">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-lm-gold uppercase font-bold tracking-wider">Prophetic Release</span>
+                            <h3 class="font-serif text-lg font-medium text-white dark:text-white light:text-gray-900 mt-0.5">Discerning the Present Gatekeepers</h3>
+                            <p class="text-xs text-lm-silver mt-1">Scripture: 1 Chronicles 12:32 • Click to play episode</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-lm-silver hidden sm:block">38:40</span>
+                </div>
+
+                <!-- Sermon Item 3 (Linked to Live Spotify Episode ID) -->
+                <div class="sermon-item bg-lm-slate/60 hover:bg-lm-slate border border-white/5 rounded-2xl p-5 flex items-center justify-between gap-4 transition-all duration-300 cursor-pointer" 
+                     id="item-sermon3" data-series="leadership" data-spotify-episode="7fL6P3wX3n8K2VqO8pZ1vY" onclick="loadSpotifySermon('7fL6P3wX3n8K2VqO8pZ1vY', 'item-sermon3')">
+                    <div class="flex items-center gap-4">
+                        <div class="w-12 h-12 bg-lm-blue/10 rounded-xl flex items-center justify-center text-lm-blue hover:scale-105 transition-all">
+                            <i class="fa-solid fa-play"></i>
+                        </div>
+                        <div>
+                            <span class="text-[10px] text-emerald-400 uppercase font-bold tracking-wider">Leadership School</span>
+                            <h3 class="font-serif text-lg font-medium text-white dark:text-white light:text-gray-900 mt-0.5">Securing Your Local Mandate</h3>
+                            <p class="text-xs text-lm-silver mt-1">Scripture: Titus 1:5 • Click to play episode</p>
+                        </div>
+                    </div>
+                    <span class="text-xs text-lm-silver hidden sm:block">42:15</span>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Live Spotify Show Embed Station (Clean, Direct Show Portal) -->
+            <div class="lg:col-span-5 bg-lm-slate border border-white/5 rounded-3xl p-6 shadow-2xl relative overflow-hidden flex flex-col h-[520px]">
+                
+                <!-- Station Title & Return to Full Show controls -->
+                <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-4">
+                    <div class="flex flex-col">
+                        <h4 class="text-xs uppercase font-bold tracking-widest text-white">Freedom Sermons Live</h4>
+                        <span id="playerActiveLabel" class="text-[10px] text-lm-silver mt-0.5">Viewing Show Library</span>
+                    </div>
+                    <button onclick="resetToFullShow()" id="btnResetShow" class="hidden px-3.5 py-1.5 rounded-full text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-white transition-all border border-white/10">
+                        <i class="fa-solid fa-rotate-left mr-1"></i> Full Show Library
+                    </button>
+                </div>
+
+                <!-- Live Spotify Podcast Show Container -->
+                <!-- SPOTIFY EMBED INTEGRATION COMMENT:
+                     By default, the iframe displays your show homepage list: `https://open.spotify.com/embed/show/0KdGx6bE5KpdAskhmyBy04`.
+                     When you click any item in the left-hand column, our JavaScript updates the source to target the specific episode:
+                     `https://open.spotify.com/embed/episode/{episode_id}` dynamically.
+                -->
+                <div id="spotifyEmbedContainer" class="flex-grow w-full">
+                    <iframe 
+                        id="spotifyIframe"
+                        style="border-radius:16px;" 
+                        src="https://open.spotify.com/embed/show/0KdGx6bE5KpdAskhmyBy04?utm_source=generator&theme=0" 
+                        width="100%" 
+                        height="100%" 
+                        frameBorder="0" 
+                        allowfullscreen="" 
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                        loading="lazy">
+                    </iframe>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<section id="books" class="py-24 bg-lm-deep relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <span class="text-xs tracking-[0.25em] uppercase text-lm-blue font-bold">APOSTOLIC LITERATURE</span>
+            <h2 class="font-serif text-4xl md:text-5xl text-white dark:text-white light:text-gray-900 font-bold mt-2">Publications & Books</h2>
+            <p class="text-lm-silver text-sm mt-4">Equip your spirit with powerful apostolic blueprints written to awaken divine authority, break spiritual strongholds, and activate your functional kingdom placement.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-16 max-w-5xl mx-auto">
+            
+            <!-- Book 1: Fear No More! -->
+            <div class="book-container flex flex-col md:flex-row items-center gap-6 bg-lm-slate/40 border border-white/5 rounded-3xl p-6 lg:p-8 hover:border-lm-blue/30 transition-all duration-300">
+                <div class="w-48 md:w-52 flex-shrink-0 book-card-3d">
+                    <!-- Verbatim image reference to Adobe Express - file (1).png -->
+                    <img src="Adobe Express - file (1).png" alt="Fear! No More. Cover" class="w-full h-auto rounded-xl shadow-2xl object-cover" onerror="this.src='https://placehold.co/400x600/161a24/ffffff?text=Fear!+No+More.'">
+                </div>
+                <div class="flex-grow flex flex-col justify-between mt-4 md:mt-0">
+                    <div>
+                        <span class="text-[10px] text-lm-gold uppercase font-bold tracking-wider">Best-Seller</span>
+                        <h3 class="font-serif text-2xl text-white font-bold mt-1 leading-tight">Fear! No More.</h3>
+                        <p class="text-[11px] text-lm-silver italic mt-0.5">2 Timothy 1:7 • Overcoming the Spirit of Fear</p>
+                        <p class="text-xs text-lm-silver/90 leading-relaxed mt-3">
+                            Demolish internal anxiety and step into bold spiritual power. Pastor Lee Martinez delivers a prophetic mandate detailing how to live fearlessly under the shield of divine authority.
+                        </p>
+                    </div>
+                    <div class="mt-6">
+                        <button onclick="purchaseBook('Fear! No More.')" class="inline-flex items-center gap-2 px-6 py-3 bg-lm-blue hover:bg-lm-blueHover text-white text-xs font-semibold rounded-full shadow-lg transition-all duration-200">
+                            <span>Get Your Copy</span>
+                            <i class="fa-solid fa-cart-shopping text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Book 2: There's Levels To This -->
+            <div class="book-container flex flex-col md:flex-row items-center gap-6 bg-lm-slate/40 border border-white/5 rounded-3xl p-6 lg:p-8 hover:border-lm-blue/30 transition-all duration-300">
+                <div class="w-48 md:w-52 flex-shrink-0 book-card-3d">
+                    <!-- Verbatim image reference to Adobe Express - file.png -->
+                    <img src="Adobe Express - file.png" alt="There's Levels To This Cover" class="w-full h-auto rounded-xl shadow-2xl object-cover" onerror="this.src='https://placehold.co/400x600/161a24/ffffff?text=There%27s+Levels+To+This'">
+                </div>
+                <div class="flex-grow flex flex-col justify-between mt-4 md:mt-0">
+                    <div>
+                        <span class="text-[10px] text-lm-gold uppercase font-bold tracking-wider">Apostolic Blueprint</span>
+                        <h3 class="font-serif text-2xl text-white font-bold mt-1 leading-tight">There's Levels To This</h3>
+                        <p class="text-[11px] text-lm-silver italic mt-0.5">How to Go From Anointed to Appointed</p>
+                        <p class="text-xs text-lm-silver/90 leading-relaxed mt-3">
+                            Understand the systematic process of spiritual ascension. Transition from raw anointing into official, authorized, and strategic kingdom administration.
+                        </p>
+                    </div>
+                    <div class="mt-6">
+                        <button onclick="purchaseBook('There\'s Levels To This')" class="inline-flex items-center gap-2 px-6 py-3 bg-lm-blue hover:bg-lm-blueHover text-white text-xs font-semibold rounded-full shadow-lg transition-all duration-200">
+                            <span>Get Your Copy</span>
+                            <i class="fa-solid fa-cart-shopping text-[10px]"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</section>
+
+<section id="booking" class="py-24 relative bg-lm-slate/10">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
+        
+        <div class="text-center max-w-2xl mx-auto mb-16">
+            <span class="text-xs tracking-[0.25em] uppercase text-lm-blue font-bold">INVITE APOSTLE LEE</span>
+            <h2 class="font-serif text-4xl md:text-5xl text-white dark:text-white light:text-gray-900 font-bold mt-2">Speaking invitations</h2>
+            <p class="text-lm-silver text-sm mt-4">Select an active date from the ministry calendar below to request Apostle Lee Martinez for preaching engagements, leadership training, or theological sessions.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            
+            <!-- Left Side: Interactive Calendar Widget -->
+            <div class="lg:col-span-7 bg-lm-slate/40 border border-white/5 rounded-3xl p-6 shadow-xl">
+                <div class="flex items-center justify-between mb-6">
+                    <button onclick="prevMonth()" class="p-2 text-lm-silver hover:text-white transition-colors bg-white/5 rounded-lg">
+                        <i class="fa-solid fa-chevron-left"></i>
+                    </button>
+                    <h3 id="calendarMonthTitle" class="font-serif text-2xl text-white font-bold">July 2026</h3>
+                    <button onclick="nextMonth()" class="p-2 text-lm-silver hover:text-white transition-colors bg-white/5 rounded-lg">
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+
+                <!-- Calendar Week Header -->
+                <div class="grid grid-cols-7 gap-2 text-center text-xs font-bold text-lm-silver mb-4 uppercase tracking-wider">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+
+                <!-- Calendar Day Grid (Filled Dynamically by JS) -->
+                <div id="calendarDaysGrid" class="grid grid-cols-7 gap-2 text-center">
+                    <!-- Days will go here -->
+                </div>
+
+                <!-- Dynamic selected day indicator -->
+                <div class="mt-6 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                        <span class="text-xs text-lm-silver block">Selected Speaking Date:</span>
+                        <span id="selectedDateLabel" class="text-lg font-serif font-bold text-white">None selected</span>
+                    </div>
+                    <div id="timeSlotsContainer" class="hidden gap-2 flex-wrap">
+                        <button onclick="selectTimeSlot('10:00 AM CST')" class="slot-btn px-4 py-2 border border-white/10 hover:border-lm-blue rounded-xl text-xs font-semibold text-white transition-all bg-lm-deep/40">10:00 AM CST</button>
+                        <button onclick="selectTimeSlot('02:00 PM CST')" class="slot-btn px-4 py-2 border border-white/10 hover:border-lm-blue rounded-xl text-xs font-semibold text-white transition-all bg-lm-deep/40">02:00 PM CST</button>
+                        <button onclick="selectTimeSlot('07:00 PM CST')" class="slot-btn px-4 py-2 border border-white/10 hover:border-lm-blue rounded-xl text-xs font-semibold text-white transition-all bg-lm-deep/40">07:00 PM CST</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Booking Details Request Form -->
+            <div class="lg:col-span-5 bg-lm-slate/30 border border-white/5 rounded-3xl p-6 md:p-8 flex flex-col justify-between">
+                <form onsubmit="handleBookingRequest(event)" class="space-y-4">
+                    <input type="hidden" id="bookingFormDate" required>
+                    <input type="hidden" id="bookingFormTime" required>
+
+                    <div>
+                        <label class="text-[10px] text-lm-silver font-bold uppercase tracking-wider block mb-1">Church / Organization Name</label>
+                        <input required type="text" id="bookingOrg" placeholder="e.g. Christian Leadership Center" class="w-full bg-lm-deep text-sm border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-lm-blue">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-[10px] text-lm-silver font-bold uppercase tracking-wider block mb-1">Primary Host Name</label>
+                            <input required type="text" id="bookingHost" placeholder="e.g. Pastor David" class="w-full bg-lm-deep text-sm border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-lm-blue">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-lm-silver font-bold uppercase tracking-wider block mb-1">Host Email</label>
+                            <input required type="email" id="bookingEmail" placeholder="e.g. mail@domain.com" class="w-full bg-lm-deep text-sm border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-lm-blue">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-lm-silver font-bold uppercase tracking-wider block mb-1">Type of preaching / Engagement</label>
+                        <select id="bookingType" class="w-full bg-lm-deep text-sm border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-lm-blue">
+                            <option value="Sunday Worship Service">Sunday Service Preaching</option>
+                            <option value="Apostolic Leadership Summit">Apostolic Leadership Summit</option>
+                            <option value="Prophetic Intercession Conference">Prophetic Intercession Conference</option>
+                            <option value="Pastoral Alignment Consultation">Strategic Alignment Consultation</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="text-[10px] text-lm-silver font-bold uppercase tracking-wider block mb-1">Additional Comments</label>
+                        <textarea id="bookingComments" rows="3" placeholder="Expected attendance size, location, theme details..." class="w-full bg-lm-deep text-sm border border-white/10 rounded-xl py-3 px-4 text-white focus:outline-none focus:border-lm-blue resize-none"></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full py-4 bg-lm-blue hover:bg-lm-blueHover text-white font-semibold text-sm rounded-xl transition-all shadow-lg shadow-lm-blue/10 flex items-center justify-center gap-2">
+                        <span>Send Preaching Invitation</span>
+                        <i class="fa-solid fa-calendar-check"></i>
+                    </button>
+                </form>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- ===== MAILING LIST SECTION ===== -->
+<section id="mailing" class="py-20 bg-lm-slate/10 relative overflow-hidden">
+    <div class="max-w-3xl mx-auto px-6 text-center relative z-10">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 bg-lm-blue/10 border border-lm-blue/20 rounded-full text-lm-blue text-xs font-semibold uppercase tracking-wider mb-6">
+            <i class="fa-solid fa-envelope"></i> Stay Connected
+        </div>
+        <h2 class="font-serif text-3xl md:text-4xl font-bold text-white mb-4">Join the Mailing List</h2>
+        <p class="text-lm-silver text-sm md:text-base max-w-xl mx-auto mb-8">
+            Receive prophetic insights, ministry updates, and exclusive content from Apostle Lee Martinez directly to your inbox.
+        </p>
+        <form id="mailingForm" onsubmit="handleMailingSubscribe(event)" class="flex flex-col sm:flex-row gap-3 max-w-lg mx-auto">
+            <input type="email" id="mailingEmail" placeholder="Enter your email address" required
+                class="mailing-input">
+            <button type="submit" id="mailingBtn"
+                class="px-8 py-3.5 bg-lm-blue hover:bg-lm-blueHover text-white font-semibold text-sm rounded-full transition-all shadow-lg shadow-lm-blue/10 flex items-center justify-center gap-2 whitespace-nowrap">
+                <i class="fa-solid fa-paper-plane"></i> Subscribe
+            </button>
+        </form>
+        <p id="mailingStatus" class="text-xs text-lm-silver mt-4"></p>
+    </div>
+</section>
+
+<!-- ===== PURCHASE MODAL ===== -->
+<div id="purchaseModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('purchaseModal')">&times;</button>
+        <h2>Purchase Book</h2>
+        <p class="subtitle" id="purchaseBookTitle">Complete your order</p>
+        <form id="purchaseForm" onsubmit="handlePurchase(event)">
+            <input type="hidden" id="purchaseBookSlug">
+            <label for="purchaseName">Full Name</label>
+            <input type="text" id="purchaseName" placeholder="Your full name" required>
+            <label for="purchaseEmail">Email Address</label>
+            <input type="email" id="purchaseEmail" placeholder="Where to send your download link" required>
+            <div id="purchaseError" class="modal-error"></div>
+            <button type="submit" id="purchaseBtn" class="btn-primary">
+                <i class="fa-solid fa-lock"></i> Proceed to Checkout
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- ===== AUTH MODAL ===== -->
+<div id="authModal" class="modal-overlay">
+    <div class="modal-content">
+        <button class="modal-close" onclick="closeModal('authModal')">&times;</button>
+        
+        <!-- Signup View -->
+        <div id="authSignupView">
+            <h2>Create Account</h2>
+            <p class="subtitle">Join the LM Ministries community</p>
+            <form id="signupForm" onsubmit="handleSignup(event)">
+                <label for="signupName">Full Name</label>
+                <input type="text" id="signupName" placeholder="Your full name" required>
+                <label for="signupEmail">Email Address</label>
+                <input type="email" id="signupEmail" placeholder="you@example.com" required>
+                <label for="signupPassword">Password</label>
+                <input type="password" id="signupPassword" placeholder="Create a password (min 8 chars)" minlength="8" required>
+                <div class="checkbox-row">
+                    <input type="checkbox" id="signupSubscribe" checked>
+                    <label for="signupSubscribe">Subscribe me to the mailing list</label>
+                </div>
+                <div id="signupError" class="modal-error"></div>
+                <button type="submit" id="signupBtn" class="btn-primary">Create Account</button>
+                <div class="switch-link">
+                    Already have an account? <a onclick="showAuthView('login')">Sign In</a>
+                </div>
+            </form>
+        </div>
+
+        <!-- Login View -->
+        <div id="authLoginView" style="display:none;">
+            <h2>Sign In</h2>
+            <p class="subtitle">Welcome back</p>
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <label for="loginEmail">Email Address</label>
+                <input type="email" id="loginEmail" placeholder="you@example.com" required>
+                <label for="loginPassword">Password</label>
+                <input type="password" id="loginPassword" placeholder="Your password" required>
+                <div id="loginError" class="modal-error"></div>
+                <button type="submit" id="loginBtn" class="btn-primary">Sign In</button>
+                <div class="switch-link">
+                    Don't have an account? <a onclick="showAuthView('signup')">Create One</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<footer class="bg-lm-deep border-t border-white/5 py-12">
+    <div class="max-w-7xl mx-auto px-6 md:px-12 flex flex-col md:flex-row items-center justify-between gap-6">
+        
+        <!-- Left Footer Brand -->
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center p-1 border border-white/10">
+                <img src="src/assets/site-header-logo.png" alt="LM Logo Mini" class="w-full h-full object-contain">
+            </div>
+            <div>
+                <span class="font-serif text-sm font-bold text-white block">LM Ministries</span>
+                <span class="text-[8px] text-lm-silver tracking-widest uppercase block font-semibold">Apostle Lee Martinez</span>
+            </div>
+        </div>
+
+        <p class="text-xs text-lm-silver">&copy; 2026 LM Ministries. All Apostolic Decrees Protected.</p>
+        
+        <!-- Footer Social Navigation Grid -->
+        <div class="flex gap-4">
+            <a href="https://open.spotify.com/show/0KdGx6bE5KpdAskhmyBy04" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-green-500 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="Spotify">
+                <i class="fa-brands fa-spotify"></i>
+            </a>
+            <a href="https://youtube.com" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-red-600 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="YouTube">
+                <i class="fa-brands fa-youtube"></i>
+            </a>
+            <a href="https://instagram.com" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-pink-500 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="https://tiktok.com" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-cyan-500 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="TikTok">
+                <i class="fa-brands fa-tiktok"></i>
+            </a>
+        </div>
+    </div>
+</footer>
+
+<!-- Toast Notifications for UI actions -->
+<div id="toastNotification" class="fixed bottom-6 right-6 z-[300] transform translate-y-12 opacity-0 pointer-events-none transition-all duration-300 max-w-sm w-full bg-lm-slate border border-lm-blue/30 p-4 rounded-xl shadow-2xl flex items-start gap-3">
+    <div class="w-8 h-8 rounded-full bg-lm-blue/10 text-lm-blue flex items-center justify-center flex-shrink-0">
+        <i class="fa-solid fa-bell text-xs"></i>
+    </div>
+    <div class="flex-grow">
+        <h4 id="toastTitle" class="font-serif font-semibold text-sm text-white">Action Complete</h4>
+        <p id="toastMessage" class="text-xs text-lm-silver mt-0.5">Operation logged successfully.</p>
+    </div>
+    <button onclick="hideToast()" class="text-lm-silver hover:text-white" aria-label="Close notification">&times;</button>
+</div>
+
+<script>
+    // Theme Mode Toggle
+    function toggleTheme() {
+        const html = document.documentElement;
+        const themeIcon = document.getElementById('themeIcon');
+        
+        if (html.classList.contains('dark')) {
+            html.classList.remove('dark');
+            html.classList.add('light');
+            themeIcon.innerHTML = `
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+            `;
+            showToast("Visual Interface Updated", "Light mode display set.");
+        } else {
+            html.classList.remove('light');
+            html.classList.add('dark');
+            themeIcon.innerHTML = `
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+            `;
+            showToast("Visual Interface Updated", "Dark mode display set.");
+        }
+    }
+
+    // Scroll styling changes to Header
+    window.addEventListener('scroll', () => {
+        const header = document.getElementById('mainHeader');
+        if (window.scrollY > 50) {
+            header.classList.remove('bg-transparent', 'py-4');
+            header.classList.add('bg-lm-slate/90', 'backdrop-blur-md', 'border-b', 'border-white/5', 'py-3');
+        } else {
+            header.classList.remove('bg-lm-slate/90', 'backdrop-blur-md', 'border-b', 'border-white/5', 'py-3');
+            header.classList.add('bg-transparent', 'py-4');
+        }
+    });
+
+    // Dynamic Booking Calendar Engine for Apostle Lee Martinez
+    let currentYear = 2026;
+    let currentMonthIndex = 6; // July is 6 (0-indexed)
+    const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    
+    // Cache of blocked dates fetched from the API, keyed by "YYYY-MM"
+    let blockedDatesCache = {};
+    // Default available days of week (Sun, Wed, Fri, Sat)
+    const DEFAULT_AVAILABLE_DAYS = [0, 3, 5, 6];
+    let availableDaysOfWeek = DEFAULT_AVAILABLE_DAYS;
+
+    // Fetch blocked dates for a given month from the API
+    async function fetchBlockedDates(year, month) {
+        const cacheKey = `${year}-${String(month).padStart(2, '0')}`;
+        if (blockedDatesCache[cacheKey]) {
+            return blockedDatesCache[cacheKey];
+        }
+        try {
+            const resp = await fetch(`/api/available-dates?month=${month}&year=${year}`);
+            const data = await resp.json();
+            if (data.success) {
+                blockedDatesCache[cacheKey] = data.blocked || [];
+                if (data.available_days) {
+                    availableDaysOfWeek = data.available_days;
+                }
+                return blockedDatesCache[cacheKey];
+            }
+        } catch (err) {
+            console.error('Failed to fetch blocked dates:', err);
+        }
+        return [];
+    }
+
+    function isDayAvailable(year, month, day) {
+        const date = new Date(year, month, day);
+        const dayOfWeek = date.getDay();
+        // Check day-of-week availability
+        if (!availableDaysOfWeek.includes(dayOfWeek)) {
+            return false;
+        }
+        // Check if date is blocked
+        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const cacheKey = `${year}-${String(month + 1).padStart(2, '0')}`;
+        const blocked = blockedDatesCache[cacheKey] || [];
+        return !blocked.includes(dateStr);
+    }
+
+    async function renderCalendar() {
+        const daysGrid = document.getElementById('calendarDaysGrid');
+        const monthTitle = document.getElementById('calendarMonthTitle');
+        daysGrid.innerHTML = '';
+        
+        monthTitle.innerText = `${monthNames[currentMonthIndex]} ${currentYear}`;
+        
+        // Fetch blocked dates for the displayed month
+        await fetchBlockedDates(currentYear, currentMonthIndex + 1);
+        
+        const firstDayOfMonth = new Date(currentYear, currentMonthIndex, 1).getDay();
+        const totalDaysInMonth = new Date(currentYear, currentMonthIndex + 1, 0).getDate();
+        
+        // Render Empty days prior to start day
+        for (let i = 0; i < firstDayOfMonth; i++) {
+            const emptyCell = document.createElement('div');
+            emptyCell.className = "calendar-day empty-day py-3";
+            daysGrid.appendChild(emptyCell);
+        }
+
+        // Render month days
+        for (let day = 1; day <= totalDaysInMonth; day++) {
+            const dayCell = document.createElement('div');
+            const available = isDayAvailable(currentYear, currentMonthIndex, day);
+            
+            dayCell.className = `calendar-day py-3 rounded-xl text-sm font-semibold transition-all duration-200 border border-transparent cursor-pointer flex flex-col items-center justify-center relative`;
+            
+            dayCell.innerHTML = `<span>${day}</span>`;
+            
+            if (available) {
+                // Add a glowing indicator point matching LM Blue
+                dayCell.innerHTML += `<span class="w-1.5 h-1.5 rounded-full bg-lm-blue absolute bottom-1.5"></span>`;
+                dayCell.classList.add('text-white', 'hover:border-lm-blue/60');
+                dayCell.onclick = () => selectBookingDate(day);
+            } else {
+                dayCell.classList.add('text-lm-silver/40', 'cursor-not-allowed');
+            }
+
+            daysGrid.appendChild(dayCell);
+        }
+    }
+
+    let selectedDayValue = null;
+    function selectBookingDate(day) {
+        selectedDayValue = day;
+        const formattedDate = `${monthNames[currentMonthIndex]} ${day}, ${currentYear}`;
+        document.getElementById('selectedDateLabel').innerText = formattedDate;
+        document.getElementById('bookingFormDate').value = formattedDate;
+
+        // Visual Active indicator highlight on selected cell
+        const cells = document.querySelectorAll('.calendar-day');
+        cells.forEach(cell => {
+            cell.classList.remove('bg-lm-blue', 'text-white', 'border-lm-gold');
+        });
+
+        // Show active time slots selector
+        const slotsContainer = document.getElementById('timeSlotsContainer');
+        slotsContainer.classList.remove('hidden');
+        slotsContainer.classList.add('flex');
+
+        showToast("Date Selected", `Pick a time slot for ${formattedDate}.`);
+    }
+
+    function selectTimeSlot(time) {
+        document.getElementById('bookingFormTime').value = time;
+        
+        // Reset slot selection borders
+        const slotButtons = document.querySelectorAll('.slot-btn');
+        slotButtons.forEach(btn => {
+            if (btn.innerText === time) {
+                btn.classList.add('border-lm-gold', 'bg-lm-blue/40');
+            } else {
+                btn.classList.remove('border-lm-gold', 'bg-lm-blue/40');
+            }
+        });
+
+        showToast("Time Slot Set", `Request prepared for ${time}.`);
+    }
+
+    function prevMonth() {
+        currentMonthIndex--;
+        if (currentMonthIndex < 0) {
+            currentMonthIndex = 11;
+            currentYear--;
+        }
+        renderCalendar();
+    }
+
+    function nextMonth() {
+        currentMonthIndex++;
+        if (currentMonthIndex > 11) {
+            currentMonthIndex = 0;
+            currentYear++;
+        }
+        renderCalendar();
+    }
+
+    // ===== BOOK PURCHASE FLOW =====
+    const BOOK_SLUGS = {
+        "Fear! No More.": "fear-no-more",
+        "There's Levels To This": "theres-levels-to-this"
+    };
+
+    function openPurchaseModal(bookName) {
+        const slug = BOOK_SLUGS[bookName];
+        if (!slug) {
+            showToast("Book Unavailable", "This book is not yet available for purchase.");
+            return;
+        }
+        document.getElementById('purchaseBookTitle').innerText = `Complete your order for "${bookName}"`;
+        document.getElementById('purchaseBookSlug').value = slug;
+        document.getElementById('purchaseError').style.display = 'none';
+        document.getElementById('purchaseModal').classList.add('active');
+    }
+
+    function purchaseBook(bookName) {
+        openPurchaseModal(bookName);
+    }
+
+    async function handlePurchase(event) {
+        event.preventDefault();
+        const slug = document.getElementById('purchaseBookSlug').value;
+        const name = document.getElementById('purchaseName').value.trim();
+        const email = document.getElementById('purchaseEmail').value.trim();
+        const errorEl = document.getElementById('purchaseError');
+        const btn = document.getElementById('purchaseBtn');
+
+        errorEl.style.display = 'none';
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+
+        try {
+            const resp = await fetch('/api/books/purchase', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ book_slug: slug, name, email })
+            });
+            const data = await resp.json();
+
+            if (resp.ok && data.checkout_url) {
+                window.location.href = data.checkout_url;
+            } else {
+                errorEl.textContent = data.message || 'Something went wrong. Please try again.';
+                errorEl.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-lock"></i> Proceed to Checkout';
+            }
+        } catch (err) {
+            console.error('Purchase error:', err);
+            errorEl.textContent = 'Network error. Please check your connection.';
+            errorEl.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-lock"></i> Proceed to Checkout';
+        }
+    }
+
+    // ===== AUTH FUNCTIONS =====
+    let currentUser = null;
+
+    function showAuthView(view) {
+        document.getElementById('authSignupView').style.display = view === 'signup' ? 'block' : 'none';
+        document.getElementById('authLoginView').style.display = view === 'login' ? 'block' : 'none';
+        document.getElementById('signupError').style.display = 'none';
+        document.getElementById('loginError').style.display = 'none';
+    }
+
+    function openAuthModal() {
+        showAuthView('signup');
+        document.getElementById('authModal').classList.add('active');
+    }
+
+    function closeModal(id) {
+        document.getElementById(id).classList.remove('active');
+    }
+
+    async function handleSignup(event) {
+        event.preventDefault();
+        const name = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const subscribe = document.getElementById('signupSubscribe').checked;
+        const errorEl = document.getElementById('signupError');
+        const btn = document.getElementById('signupBtn');
+
+        errorEl.style.display = 'none';
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Creating Account...';
+
+        try {
+            const resp = await fetch('/api/auth/signup', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password, subscribe_to_list: subscribe })
+            });
+            const data = await resp.json();
+
+            if (resp.ok && data.token) {
+                localStorage.setItem('lm_auth_token', data.token);
+                currentUser = data.user;
+                closeModal('authModal');
+                updateAuthUI();
+                showToast('Account Created', 'Welcome to the LM Ministries community!');
+            } else {
+                errorEl.textContent = data.message || 'Signup failed. Please try again.';
+                errorEl.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = 'Create Account';
+            }
+        } catch (err) {
+            console.error('Signup error:', err);
+            errorEl.textContent = 'Network error. Please check your connection.';
+            errorEl.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = 'Create Account';
+        }
+    }
+
+    async function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+        const errorEl = document.getElementById('loginError');
+        const btn = document.getElementById('loginBtn');
+
+        errorEl.style.display = 'none';
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Signing In...';
+
+        try {
+            const resp = await fetch('/api/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await resp.json();
+
+            if (resp.ok && data.token) {
+                localStorage.setItem('lm_auth_token', data.token);
+                currentUser = data.user;
+                closeModal('authModal');
+                updateAuthUI();
+                showToast('Welcome Back', `Signed in as ${currentUser.name}`);
+            } else {
+                errorEl.textContent = data.message || 'Invalid email or password.';
+                errorEl.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = 'Sign In';
+            }
+        } catch (err) {
+            console.error('Login error:', err);
+            errorEl.textContent = 'Network error. Please check your connection.';
+            errorEl.style.display = 'block';
+            btn.disabled = false;
+            btn.innerHTML = 'Sign In';
+        }
+    }
+
+    function logout() {
+        localStorage.removeItem('lm_auth_token');
+        currentUser = null;
+        updateAuthUI();
+        showToast('Signed Out', 'You have been signed out.');
+    }
+
+    function updateAuthUI() {
+        const headerActions = document.querySelector('#mainHeader .flex.items-center.gap-4');
+        if (!headerActions) return;
+
+        const existingBtn = document.getElementById('headerAuthBtn');
+        if (existingBtn) existingBtn.remove();
+
+        const authBtn = document.createElement('div');
+        authBtn.id = 'headerAuthBtn';
+
+        if (currentUser) {
+            authBtn.className = 'flex items-center gap-3';
+            authBtn.innerHTML = `
+                <span class="text-xs text-lm-silver hidden sm:inline">${currentUser.name}</span>
+                <button onclick="logout()" class="text-xs text-lm-silver hover:text-white transition-colors">Sign Out</button>
+            `;
+        } else {
+            authBtn.innerHTML = `
+                <button onclick="openAuthModal()" class="px-4 py-2 text-xs font-semibold bg-lm-blue hover:bg-lm-blueHover text-white rounded-full transition-all shadow-lg shadow-lm-blue/10">
+                    <i class="fa-solid fa-user"></i> Sign Up
+                </button>
+            `;
+        }
+        headerActions.appendChild(authBtn);
+    }
+
+    async function checkAuthState() {
+        const token = localStorage.getItem('lm_auth_token');
+        if (!token) return;
+
+        try {
+            const resp = await fetch('/api/auth/me', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (resp.ok) {
+                const data = await resp.json();
+                currentUser = data.user;
+                updateAuthUI();
+            } else {
+                localStorage.removeItem('lm_auth_token');
+            }
+        } catch (err) {
+            console.error('Auth check failed:', err);
+        }
+    }
+
+    // ===== MAILING LIST =====
+    async function handleMailingSubscribe(event) {
+        event.preventDefault();
+        const email = document.getElementById('mailingEmail').value.trim();
+        const btn = document.getElementById('mailingBtn');
+        const status = document.getElementById('mailingStatus');
+
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Subscribing...';
+        status.textContent = '';
+
+        try {
+            const resp = await fetch('/api/mailing/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email })
+            });
+            const data = await resp.json();
+
+            if (resp.ok && data.success) {
+                status.textContent = '✓ You\'ve been subscribed! Check your inbox for confirmation.';
+                status.className = 'text-xs text-green-400 mt-4';
+                document.getElementById('mailingEmail').value = '';
+            } else {
+                status.textContent = data.message || 'Subscription failed. Please try again.';
+                status.className = 'text-xs text-red-400 mt-4';
+            }
+        } catch (err) {
+            console.error('Mailing subscribe error:', err);
+            status.textContent = 'Network error. Please check your connection.';
+            status.className = 'text-xs text-red-400 mt-4';
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Subscribe';
+        }
+    }
+
+    // Submit Booking request handler — POST to backend API
+    async function handleBookingRequest(event) {
+        event.preventDefault();
+        const date = document.getElementById('bookingFormDate').value;
+        const time = document.getElementById('bookingFormTime').value;
+        const org = document.getElementById('bookingOrg').value;
+        const host = document.getElementById('bookingHost').value;
+        const email = document.getElementById('bookingEmail').value;
+        const engagementType = document.getElementById('bookingType').value;
+        const comments = document.getElementById('bookingComments').value;
+
+        if (!date || !time) {
+            showToast("Required Date Missing", "Please select an available calendar date and active time slot.");
+            return;
+        }
+
+        const submitBtn = event.target.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Submitting...';
+
+        try {
+            const resp = await fetch('/api/book-speaking', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    organization: org,
+                    host: host,
+                    email: email,
+                    engagement_type: engagementType,
+                    date: date,
+                    time: time,
+                    comments: comments
+                })
+            });
+
+            const data = await resp.json();
+
+            if (resp.ok && data.success) {
+                showToast("Invitation Submitted!", `Your speaking invitation for ${org} on ${date} has been received. We'll be in touch!`);
+                event.target.reset();
+                document.getElementById('selectedDateLabel').innerText = "None selected";
+                document.getElementById('timeSlotsContainer').classList.add('hidden');
+                // Refresh calendar to reflect newly blocked date
+                blockedDatesCache = {};
+                renderCalendar();
+            } else {
+                showToast("Submission Failed", data.message || "Something went wrong. Please try again.");
+            }
+        } catch (err) {
+            console.error('Booking submission error:', err);
+            showToast("Network Error", "Could not reach the server. Please check your connection and try again.");
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = originalText;
+        }
+    }
+
+    // Initial setup calendar render
+    window.onload = function () {
+        renderCalendar();
+        updateAuthUI();
+        checkAuthState();
+    }
+
+    // Sermons filtering engine
+    function filterSermons(category) {
+        const items = document.querySelectorAll('.sermon-item');
+        
+        const buttons = ['all', 'apostolic', 'prophetic', 'leadership'];
+        buttons.forEach(btn => {
+            const el = document.getElementById(`filter-${btn}`);
+            if (btn === category) {
+                el.classList.add('bg-lm-blue', 'text-white');
+                el.classList.remove('text-lm-silver');
+            } else {
+                el.classList.remove('bg-lm-blue', 'text-white');
+                el.classList.add('text-lm-silver');
+            }
+        });
+
+        items.forEach(item => {
+            const series = item.getAttribute('data-series');
+            if (category === 'all' || series === category) {
+                item.classList.remove('hidden');
+            } else {
+                item.classList.add('hidden');
+            }
+        });
+    }
+
+    /**
+     * Loads a specific episode inside the Spotify Iframe Player
+     * @param {string} spotifyEpisodeId - The Spotify 22-character unique ID for the track/episode
+     * @param {string} elementId - The DOM element ID representing the list item row
+     */
+    function loadSpotifySermon(spotifyEpisodeId, elementId) {
+        const iframe = document.getElementById('spotifyIframe');
+        const activeLabel = document.getElementById('playerActiveLabel');
+        const btnReset = document.getElementById('btnResetShow');
+        
+        // 1. Update the Spotify embed source URL dynamically
+        iframe.src = `https://open.spotify.com/embed/episode/${spotifyEpisodeId}?utm_source=generator&theme=0`;
+        
+        // 2. Adjust active UI borders inside list
+        document.querySelectorAll('.sermon-item').forEach(item => {
+            item.classList.remove('sermon-active-border');
+        });
+        document.getElementById(elementId).classList.add('sermon-active-border');
+        
+        // 3. Show "Reset to full library" toggle
+        activeLabel.innerText = "Playing Selected Sermon";
+        activeLabel.classList.add('text-lm-gold');
+        btnReset.classList.remove('hidden');
+        
+        showToast("Episode Sent to Player", "Now loading selected sermon inside the Spotify player.");
+    }
+
+    /**
+     * Resets the player back to display the full "Freedom Sermons" show archive catalog
+     */
+    function resetToFullShow() {
+        const iframe = document.getElementById('spotifyIframe');
+        const activeLabel = document.getElementById('playerActiveLabel');
+        const btnReset = document.getElementById('btnResetShow');
+
+        // Restore default podcast list feed URL
+        iframe.src = "https://open.spotify.com/embed/show/0KdGx6bE5KpdAskhmyBy04?utm_source=generator&theme=0";
+        
+        // Strip active visual borders on list
+        document.querySelectorAll('.sermon-item').forEach(item => {
+            item.classList.remove('sermon-active-border');
+        });
+
+        activeLabel.innerText = "Viewing Show Library";
+        activeLabel.classList.remove('text-lm-gold');
+        btnReset.classList.add('hidden');
+        
+        showToast("Returned to Library", "Now displaying full catalog library feed.");
+    }
+
+    // Toast Control Panel Functions
+    function showToast(title, msg) {
+        const toast = document.getElementById('toastNotification');
+        document.getElementById('toastTitle').innerText = title;
+        document.getElementById('toastMessage').innerText = msg;
+
+        toast.classList.remove('translate-y-12', 'opacity-0', 'pointer-events-none');
+        toast.classList.add('translate-y-0', 'opacity-100');
+
+        setTimeout(() => {
+            hideToast();
+        }, 4000);
+    }
+
+    function hideToast() {
+        const toast = document.getElementById('toastNotification');
+        toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+    }
+</script>
+</body>
 </html>
