@@ -13,5 +13,22 @@
       "binding": "BOOKS_BUCKET",
       "bucket_name": "lm-books-pdfs"
     }
-  ]
+  ],
+  "env": {
+    "preview": {
+      "d1_databases": [
+        {
+          "binding": "DB",
+          "database_name": "lm-ministries-db-preview",
+          "database_id": "c6cb9dd0-70cb-4d50-bb4b-044761f4730e"
+        }
+      ],
+      "r2_buckets": [
+        {
+          "binding": "BOOKS_BUCKET",
+          "bucket_name": "lm-books-pdfs"
+        }
+      ]
+    }
+  }
 }
