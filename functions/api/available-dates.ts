@@ -55,8 +55,8 @@ export const onRequest: PagesFunction<Env> = async (context) => {
         month,
         year,
         blocked,
-        // Default available days of week (Mon-Sat); Sundays are always unavailable
-        available_days: [1, 2, 3, 4, 5, 6],
+        // All days of the week are available; only explicitly blocked dates are restricted
+        available_days: [0, 1, 2, 3, 4, 5, 6],
       }),
       { status: 200, headers: { 'Content-Type': 'application/json' } }
     );
