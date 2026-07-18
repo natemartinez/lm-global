@@ -13,7 +13,7 @@ interface Env {
 }
 
 export const onRequest: PagesFunction<Env> = async (context) => {
-  const { request, env } = context;
+  const { request, env, ctx } = context;
 
   if (request.method !== 'GET') {
     return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
@@ -30,6 +30,26 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       return new Response(
         JSON.stringify({ success: false, message: 'Missing download token' }),
         { status: 400, headers: { 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Rate limiting — prevent brute-force bots from cycling through tokens.
+    // Log this attempt in the background so it doesn't block the response.
+    const ip = request.headers.get('CF-Connecting-IP') || 'unknown';
+    ctx.waitUntil(env.DB.prepare(
+      'INSERT INTO download_attempts (ip_address) VALUES (?)'
+    ).bind(ip).run());
+
+    // Check if this IP has exceeded the rate limit (more than 10 attempts in the last minute)
+    const recentAttempts = await env.DB.prepare(
+      `SELECT COUNT(*) as count FROM download_attempts
+       WHERE ip_address = ? AND attempted_at > datetime('now', '-1 minute')`
+    ).bind(ip).first<{ count: number }>();
+
+    if (recentAttempts && recentAttempts.count > 10) {
+      return new Response(
+        JSON.stringify({ success: false, message: 'Too many download attempts. Please try again later.' }),
+        { status: 429, headers: { 'Content-Type': 'application/json', 'Retry-After': '60' } }
       );
     }
 

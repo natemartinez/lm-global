@@ -1,6 +1,10 @@
 name = "lm-live-site"
 pages_build_output_dir = "."
 
+[observability]
+enabled = true
+head_sampling_rate = 1
+
 [[d1_databases]]
 binding = "DB"
 database_name = "lm-ministries-db"

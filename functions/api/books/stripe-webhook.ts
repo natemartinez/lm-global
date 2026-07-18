@@ -21,7 +21,7 @@ interface Env {
 }
 
 export const onRequest: PagesFunction<Env> = async (context) => {
-  const { request, env } = context;
+  const { request, env, ctx } = context;
 
   if (request.method !== 'POST') {
     return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
@@ -99,6 +99,20 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       );
     }
 
+    // Idempotency check — if we've already processed this Stripe session, return 200
+    // to stop Stripe from retrying. This prevents wasted requests from webhook retries.
+    const existingOrder = await env.DB.prepare(
+      'SELECT id FROM orders WHERE stripe_session_id = ?'
+    ).bind(sessionId).first();
+
+    if (existingOrder) {
+      console.log('Duplicate webhook received for session:', sessionId, '- returning 200');
+      return new Response(JSON.stringify({ success: true, received: true }), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
     // Generate a unique download token
     const downloadToken = crypto.randomUUID();
 
@@ -123,16 +137,18 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       );
     }
 
-    // Send download link email via Resend
+    // Send download link email via Resend in the background.
+    // Using ctx.waitUntil() means we respond to Stripe immediately (preventing retries)
+    // while the email sends asynchronously. This avoids CPU timeouts on the free plan.
     const origin = new URL(request.url).origin;
     const downloadUrl = `${origin}/api/books/download?token=${downloadToken}`;
 
-    await sendEmail(env.RESEND_API_KEY, {
+    ctx.waitUntil(sendEmail(env.RESEND_API_KEY, {
       to: customerEmail,
       subject: `Your Download — ${book.title}`,
       html: buildDownloadEmailHtml(book.title, downloadUrl, customerName),
       text: buildDownloadEmailText(book.title, downloadUrl, customerName),
-    }, 'mailing');
+    }, 'mailing'));
 
     return new Response(JSON.stringify({ success: true, received: true }), {
       status: 200,

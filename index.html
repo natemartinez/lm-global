@@ -42,6 +42,17 @@
     </script>
 
     <style>
+        .hero-img-wrapper {
+            position: absolute;
+            inset: 0;
+            overflow: hidden;
+        }
+        .hero-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: opacity(0.55) brightness(0.50) saturate(0.8);
+        }
         .glass-panel {
             background: rgba(22, 26, 36, 0.55);
             backdrop-filter: blur(20px);
@@ -95,36 +106,16 @@
             color: #64748b !important;
         }
 
-        /* Sermon items */
-        .light .sermon-item {
-            background: rgba(255,255,255,0.7) !important;
-            border-color: rgba(15,76,129,0.08) !important;
-        }
-        .light .sermon-item:hover {
-            background: rgba(255,255,255,0.9) !important;
-        }
-        .light .sermon-item h3 {
-            color: #1e293b !important;
-        }
-        .light .sermon-item .text-lm-silver {
-            color: #64748b !important;
-        }
-
         /* Spotify embed panel */
-        .light [class*="bg-lm-slate"][class*="rounded-3xl"][class*="h-[520px]"] {
+        .light [class*="bg-lm-slate"][class*="rounded-3xl"] {
             background: rgba(255,255,255,0.85) !important;
             border-color: rgba(15,76,129,0.08) !important;
         }
-        .light [class*="bg-lm-slate"][class*="rounded-3xl"][class*="h-[520px]"] h4 {
+        .light [class*="bg-lm-slate"][class*="rounded-3xl"] h4 {
             color: #1e293b !important;
         }
-        .light [class*="bg-lm-slate"][class*="rounded-3xl"][class*="h-[520px]"] [class*="border-b"] {
+        .light [class*="bg-lm-slate"][class*="rounded-3xl"] [class*="border-b"] {
             border-color: rgba(15,76,129,0.1) !important;
-        }
-        .light [class*="bg-lm-slate"][class*="rounded-3xl"][class*="h-[520px]"] button {
-            background: rgba(15,76,129,0.06) !important;
-            border-color: rgba(15,76,129,0.1) !important;
-            color: #1e293b !important;
         }
 
         /* Books section cards */
@@ -203,18 +194,6 @@
             background: rgba(15,76,129,0.08) !important;
         }
 
-        /* Filter bar */
-        .light [class*="bg-lm-deep/50"][class*="rounded-full"] {
-            background: rgba(255,255,255,0.7) !important;
-            border-color: rgba(15,76,129,0.08) !important;
-        }
-        .light [class*="bg-lm-deep/50"][class*="rounded-full"] button:not([class*="bg-lm-blue"]) {
-            color: #64748b !important;
-        }
-        .light [class*="bg-lm-deep/50"][class*="rounded-full"] button:not([class*="bg-lm-blue"]):hover {
-            color: #1e293b !important;
-        }
-
         /* Footer */
         .light footer[class*="bg-lm-deep"] {
             background: #f1f5f9 !important;
@@ -279,10 +258,9 @@
             border-color: #0F4C81;
         }
 
-        /* Active Sermon List Highlight classes */
-        .sermon-active-border {
-            border-color: #0F4C81 !important;
-            background-color: rgba(15, 76, 129, 0.1) !important;
+        /* Light mode: "Listen on Spotify" CTA */
+        .light a[class*="bg-green-600"] {
+            color: #ffffff !important;
         }
 
         /* Book 3D Hover effect with shadows */
@@ -552,10 +530,12 @@
     </div>
 </header>
 
-<section id="home" class="relative min-h-[105vh] flex items-center justify-center overflow-hidden pt-24 pb-16">
+<section id="home" class="relative min-h-[105vh] flex items-center justify-center overflow-hidden pt-24 pb-16" style="background-image: url('src/assets/LM-GlobalWallpaper.png'); background-size: cover; background-position: center; background-repeat: no-repeat;">
     <div class="absolute inset-0 z-0">
-        <!-- Main Collage Cover Photo -->
-        <img src="LM Global Cover Photo (1).png" alt="LM Global Collage Cover Photo" class="w-full h-full object-cover object-center filter opacity-40 brightness-[0.25] saturate-[0.8]">
+        <!-- Main Collage Cover Photo with mobile-responsive swap -->
+        <div class="hero-img-wrapper">
+            <img id="hero-bg-image" src="src/assets/LMCoverPhoto-desktop.png" alt="Welcome to LM Ministries" class="hero-img">
+        </div>
         <!-- Gradient layers matching design layout -->
         <div class="absolute inset-0 bg-gradient-to-t from-lm-deep via-lm-deep/70 to-transparent"></div>
         <div class="absolute inset-0 bg-gradient-to-r from-lm-deep/85 via-transparent to-lm-deep/85"></div>
@@ -606,43 +586,43 @@
                         <i class="fa-brands fa-spotify text-green-400 text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">Apostolic Voice</h3>
-                        <p class="text-xs text-lm-silver leading-relaxed">Listen to weekly audio releases and apostolic decrees on Spotify.</p>
+                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">Sermons on Spotify</h3>
+                        <p class="text-xs text-lm-silver leading-relaxed">Listen to Apostle Lee's Sermons and Preachings released weekly</p>
                     </div>
                 </a>
 
                 <!-- YouTube Card Link -->
-                <a href="https://youtube.com" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
+                <a href="https://www.youtube.com/@lmglobalmin" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
                     <div class="flex items-center justify-between mb-4">
                         <span class="text-[9px] uppercase font-bold tracking-widest text-red-500">Video Broadcasts</span>
                         <i class="fa-brands fa-youtube text-red-500 text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">LM Global YouTube</h3>
+                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">LM Global Ministries</h3>
                         <p class="text-xs text-lm-silver leading-relaxed">Watch regional crusades, leadership schools, and live streams.</p>
                     </div>
                 </a>
 
                 <!-- Instagram Card Link -->
-                <a href="https://instagram.com" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
+                <a href="https://www.instagram.com/ap_leemartinez/" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
                     <div class="flex items-center justify-between mb-4">
                         <span class="text-[9px] uppercase font-bold tracking-widest text-pink-400">Daily Updates</span>
                         <i class="fa-brands fa-instagram text-pink-400 text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">@ApostleLee</h3>
+                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">@ap_leemartinez</h3>
                         <p class="text-xs text-lm-silver leading-relaxed">Receive daily prophetic quote keys, updates, and scriptural slides.</p>
                     </div>
                 </a>
 
                 <!-- TikTok Card Link -->
-                <a href="https://tiktok.com" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
+                <a href="https://www.tiktok.com/@ap_leemartinez" target="_blank" class="bg-lm-deep/40 hover:bg-lm-blue/20 border border-white/5 p-5 rounded-xl transition-all duration-300 hover:-translate-y-1 group flex flex-col justify-between h-full">
                     <div class="flex items-center justify-between mb-4">
                         <span class="text-[9px] uppercase font-bold tracking-widest text-cyan-400">Short Messages</span>
                         <i class="fa-brands fa-tiktok text-cyan-400 text-xl"></i>
                     </div>
                     <div>
-                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">TikTok Insights</h3>
+                        <h3 class="font-serif text-lg text-white font-bold mb-1 group-hover:text-lm-gold transition-colors">@ap_leemartinez</h3>
                         <p class="text-xs text-lm-silver leading-relaxed">Watch concise, dynamic 60-second prophetic declarations.</p>
                     </div>
                 </a>
@@ -710,108 +690,55 @@
                 <h2 class="font-serif text-4xl md:text-5xl text-white dark:text-white light:text-gray-900 font-bold mt-2">Freedom Sermons</h2>
                 <p class="text-lm-silver text-sm mt-2">Explore weekly audio broadcasts, leadership briefings, and prophetic declarations directly on Spotify.</p>
             </div>
-            
-            <!-- Category Filter Buttons -->
-            <div class="flex flex-wrap gap-2.5 mt-6 md:mt-0 bg-lm-deep/50 p-1.5 rounded-full border border-white/5">
-                <button onclick="filterSermons('all')" id="filter-all" class="px-5 py-2 rounded-full text-xs font-semibold bg-lm-blue text-white transition-all shadow-md">All Media</button>
-                <button onclick="filterSermons('apostolic')" id="filter-apostolic" class="px-5 py-2 rounded-full text-xs font-semibold text-lm-silver hover:text-white transition-all">Apostolic Order</button>
-                <button onclick="filterSermons('prophetic')" id="filter-prophetic" class="px-5 py-2 rounded-full text-xs font-semibold text-lm-silver hover:text-white transition-all">Prophetic Decrees</button>
-                <button onclick="filterSermons('leadership')" id="filter-leadership" class="px-5 py-2 rounded-full text-xs font-semibold text-lm-silver hover:text-white transition-all">Leadership Class</button>
-            </div>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            
-            <!-- Left: Playable Audio List linked directly to Spotify Iframe actions -->
-            <div class="lg:col-span-7 space-y-4" id="sermonsContainer">
+        <!-- Single column: Spotify embed panel -->
+        <div class="max-w-3xl mx-auto">
+            <div class="bg-lm-slate border border-white/5 rounded-3xl p-6 md:p-8 shadow-2xl relative overflow-hidden">
                 
-                <!-- Sermon Item 1 (Linked to Live Spotify Episode ID) -->
-                <!-- SPOTIFY EMED NOTE: Replace the dataset spotify-episode attribute with your specific Spotify track/episode ID from your podcast dashboard -->
-                <div class="sermon-item bg-lm-slate/60 hover:bg-lm-slate border border-white/5 rounded-2xl p-5 flex items-center justify-between gap-4 transition-all duration-300 cursor-pointer" 
-                     id="item-sermon1" data-series="apostolic" data-spotify-episode="5vM1fOOn88g6k067YQpL3A" onclick="loadSpotifySermon('5vM1fOOn88g6k067YQpL3A', 'item-sermon1')">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-lm-blue/10 rounded-xl flex items-center justify-center text-lm-blue hover:scale-105 transition-all">
-                            <i class="fa-solid fa-play"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] text-lm-blue uppercase font-bold tracking-wider">Apostolic Alignment</span>
-                            <h3 class="font-serif text-lg font-medium text-white dark:text-white light:text-gray-900 mt-0.5">The Structure of Apostolic Governance</h3>
-                            <p class="text-xs text-lm-silver mt-1">Scripture: Ephesians 4:11-12 • Click to play episode</p>
-                        </div>
+                <!-- Station Title with Show Cover Art & Spotify CTA -->
+                <div class="flex items-center gap-3 mb-5 border-b border-white/10 pb-4">
+                    <img
+                         src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='48' height='48' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23161A24'/%3E%3Ctext x='24' y='28' text-anchor='middle' fill='%230F4C81' font-family='serif' font-size='18' font-weight='bold'%3ELM%3C/text%3E%3C/svg%3E"
+                         alt="Freedom Sermons"
+                         class="w-12 h-12 rounded-xl object-cover border border-white/10 flex-shrink-0">
+                    <div class="flex flex-col min-w-0">
+                        <h4 class="text-xs uppercase font-bold tracking-widest text-white truncate">Freedom Sermons</h4>
+                        <span class="text-[10px] text-lm-silver mt-0.5">Listen on Spotify</span>
                     </div>
-                    <span class="text-xs text-lm-silver hidden sm:block">45:12</span>
+                    <a href="https://open.spotify.com/show/0KdGx6bE5KpdAskhmyBy04"
+                       target="_blank"
+                       class="ml-auto px-3 py-1.5 rounded-full text-[11px] font-semibold bg-green-600/20 hover:bg-green-600/40 text-green-400 transition-all border border-green-500/20 flex items-center gap-1.5 flex-shrink-0">
+                        <i class="fa-brands fa-spotify text-xs"></i>
+                        <span class="hidden sm:inline">Spotify</span>
+                    </a>
                 </div>
 
-                <!-- Sermon Item 2 (Linked to Live Spotify Episode ID) -->
-                <div class="sermon-item bg-lm-slate/60 hover:bg-lm-slate border border-white/5 rounded-2xl p-5 flex items-center justify-between gap-4 transition-all duration-300 cursor-pointer" 
-                     id="item-sermon2" data-series="prophetic" data-spotify-episode="2hGjTfH4L3N8G6P3VpKZ7w" onclick="loadSpotifySermon('2hGjTfH4L3N8G6P3VpKZ7w', 'item-sermon2')">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-lm-blue/10 rounded-xl flex items-center justify-center text-lm-blue hover:scale-105 transition-all">
-                            <i class="fa-solid fa-play"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] text-lm-gold uppercase font-bold tracking-wider">Prophetic Release</span>
-                            <h3 class="font-serif text-lg font-medium text-white dark:text-white light:text-gray-900 mt-0.5">Discerning the Present Gatekeepers</h3>
-                            <p class="text-xs text-lm-silver mt-1">Scripture: 1 Chronicles 12:32 • Click to play episode</p>
-                        </div>
-                    </div>
-                    <span class="text-xs text-lm-silver hidden sm:block">38:40</span>
-                </div>
-
-                <!-- Sermon Item 3 (Linked to Live Spotify Episode ID) -->
-                <div class="sermon-item bg-lm-slate/60 hover:bg-lm-slate border border-white/5 rounded-2xl p-5 flex items-center justify-between gap-4 transition-all duration-300 cursor-pointer" 
-                     id="item-sermon3" data-series="leadership" data-spotify-episode="7fL6P3wX3n8K2VqO8pZ1vY" onclick="loadSpotifySermon('7fL6P3wX3n8K2VqO8pZ1vY', 'item-sermon3')">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-lm-blue/10 rounded-xl flex items-center justify-center text-lm-blue hover:scale-105 transition-all">
-                            <i class="fa-solid fa-play"></i>
-                        </div>
-                        <div>
-                            <span class="text-[10px] text-emerald-400 uppercase font-bold tracking-wider">Leadership School</span>
-                            <h3 class="font-serif text-lg font-medium text-white dark:text-white light:text-gray-900 mt-0.5">Securing Your Local Mandate</h3>
-                            <p class="text-xs text-lm-silver mt-1">Scripture: Titus 1:5 • Click to play episode</p>
-                        </div>
-                    </div>
-                    <span class="text-xs text-lm-silver hidden sm:block">42:15</span>
-                </div>
-
-            </div>
-
-            <!-- Right Column: Live Spotify Show Embed Station (Clean, Direct Show Portal) -->
-            <div class="lg:col-span-5 bg-lm-slate border border-white/5 rounded-3xl p-6 shadow-2xl relative overflow-hidden flex flex-col h-[520px]">
-                
-                <!-- Station Title & Return to Full Show controls -->
-                <div class="flex items-center justify-between mb-4 border-b border-white/10 pb-4">
-                    <div class="flex flex-col">
-                        <h4 class="text-xs uppercase font-bold tracking-widest text-white">Freedom Sermons Live</h4>
-                        <span id="playerActiveLabel" class="text-[10px] text-lm-silver mt-0.5">Viewing Show Library</span>
-                    </div>
-                    <button onclick="resetToFullShow()" id="btnResetShow" class="hidden px-3.5 py-1.5 rounded-full text-[11px] font-semibold bg-white/5 hover:bg-white/10 text-white transition-all border border-white/10">
-                        <i class="fa-solid fa-rotate-left mr-1"></i> Full Show Library
-                    </button>
-                </div>
-
-                <!-- Live Spotify Podcast Show Container -->
-                <!-- SPOTIFY EMBED INTEGRATION COMMENT:
-                     By default, the iframe displays your show homepage list: `https://open.spotify.com/embed/show/0KdGx6bE5KpdAskhmyBy04`.
-                     When you click any item in the left-hand column, our JavaScript updates the source to target the specific episode:
-                     `https://open.spotify.com/embed/episode/{episode_id}` dynamically.
-                -->
-                <div id="spotifyEmbedContainer" class="flex-grow w-full">
-                    <iframe 
-                        id="spotifyIframe"
-                        style="border-radius:16px;" 
-                        src="https://open.spotify.com/embed/show/0KdGx6bE5KpdAskhmyBy04?utm_source=generator&theme=0" 
-                        width="100%" 
-                        height="100%" 
-                        frameBorder="0" 
-                        allowfullscreen="" 
-                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" 
+                <!-- Spotify Podcast Show Embed -->
+                <div class="w-full" style="min-height: 352px;">
+                    <iframe
+                        style="border-radius:16px;"
+                        src="https://open.spotify.com/embed/show/0KdGx6bE5KpdAskhmyBy04?utm_source=generator&theme=0"
+                        width="100%"
+                        height="352"
+                        frameBorder="0"
+                        allowfullscreen=""
+                        allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
                         loading="lazy">
                     </iframe>
                 </div>
 
-            </div>
+                <!-- "Listen on Spotify" CTA below embed -->
+                <div class="text-center mt-6">
+                    <a href="https://open.spotify.com/show/0KdGx6bE5KpdAskhmyBy04"
+                       target="_blank"
+                       class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 hover:bg-green-700 text-white text-sm font-semibold rounded-full transition-all shadow-lg shadow-green-600/20">
+                        <i class="fa-brands fa-spotify text-lg"></i>
+                        Listen to Full Show on Spotify
+                    </a>
+                </div>
 
+            </div>
         </div>
     </div>
 </section>
@@ -1084,20 +1011,23 @@
             </div>
         </div>
 
-        <p class="text-xs text-lm-silver">&copy; 2026 LM Ministries. All Apostolic Decrees Protected.</p>
+        <div class="flex flex-col items-center gap-2">
+            <a href="mailto:fmw@pastorlee@gmail.com" class="text-xs text-lm-silver hover:text-lm-blue transition-colors">For questions and support, email fmw@pastorlee@gmail.com</a>
+            <a href="/admin.html" class="text-[10px] text-lm-silver/50 hover:text-lm-silver transition-colors">Admin login</a>
+        </div>
         
         <!-- Footer Social Navigation Grid -->
         <div class="flex gap-4">
             <a href="https://open.spotify.com/show/0KdGx6bE5KpdAskhmyBy04" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-green-500 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="Spotify">
                 <i class="fa-brands fa-spotify"></i>
             </a>
-            <a href="https://youtube.com" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-red-600 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="YouTube">
+            <a href="https://www.youtube.com/@lmglobalmin" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-red-600 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="YouTube">
                 <i class="fa-brands fa-youtube"></i>
             </a>
-            <a href="https://instagram.com" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-pink-500 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="Instagram">
+            <a href="https://www.instagram.com/ap_leemartinez/" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-pink-500 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="Instagram">
                 <i class="fa-brands fa-instagram"></i>
             </a>
-            <a href="https://tiktok.com" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-cyan-500 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="TikTok">
+            <a href="https://www.tiktok.com/@ap_leemartinez" target="_blank" class="w-8 h-8 rounded-full bg-white/5 hover:bg-cyan-500 text-lm-silver hover:text-white flex items-center justify-center transition-colors" aria-label="TikTok">
                 <i class="fa-brands fa-tiktok"></i>
             </a>
         </div>
@@ -1335,6 +1265,16 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ book_slug: slug, name, email })
             });
+
+            // Check for rate-limit / over-limit responses before parsing JSON
+            const rateLimitMsg = getRateLimitMessage(resp);
+            if (rateLimitMsg) {
+                showToast('High Traffic', rateLimitMsg);
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-lock"></i> Proceed to Checkout';
+                return;
+            }
+
             const data = await resp.json();
 
             if (resp.ok && data.checkout_url) {
@@ -1392,6 +1332,16 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ name, email, password, subscribe_to_list: subscribe })
             });
+
+            // Check for rate-limit / over-limit responses before parsing JSON
+            const rateLimitMsg = getRateLimitMessage(resp);
+            if (rateLimitMsg) {
+                showToast('High Traffic', rateLimitMsg);
+                btn.disabled = false;
+                btn.innerHTML = 'Create Account';
+                return;
+            }
+
             const data = await resp.json();
 
             if (resp.ok && data.token) {
@@ -1432,6 +1382,16 @@
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email, password })
             });
+
+            // Check for rate-limit / over-limit responses before parsing JSON
+            const rateLimitMsg = getRateLimitMessage(resp);
+            if (rateLimitMsg) {
+                showToast('High Traffic', rateLimitMsg);
+                btn.disabled = false;
+                btn.innerHTML = 'Sign In';
+                return;
+            }
+
             const data = await resp.json();
 
             if (resp.ok && data.token) {
@@ -1469,22 +1429,15 @@
         const existingBtn = document.getElementById('headerAuthBtn');
         if (existingBtn) existingBtn.remove();
 
+        if (!currentUser) return;
+
         const authBtn = document.createElement('div');
         authBtn.id = 'headerAuthBtn';
-
-        if (currentUser) {
-            authBtn.className = 'flex items-center gap-3';
-            authBtn.innerHTML = `
-                <span class="text-xs text-lm-silver hidden sm:inline">${currentUser.name}</span>
-                <button onclick="logout()" class="text-xs text-lm-silver hover:text-white transition-colors">Sign Out</button>
-            `;
-        } else {
-            authBtn.innerHTML = `
-                <button onclick="openAuthModal()" class="px-4 py-2 text-xs font-semibold bg-lm-blue hover:bg-lm-blueHover text-white rounded-full transition-all shadow-lg shadow-lm-blue/10">
-                    <i class="fa-solid fa-user"></i> Sign Up
-                </button>
-            `;
-        }
+        authBtn.className = 'flex items-center gap-3';
+        authBtn.innerHTML = `
+            <span class="text-xs text-lm-silver hidden sm:inline">${currentUser.name}</span>
+            <button onclick="logout()" class="text-xs text-lm-silver hover:text-white transition-colors">Sign Out</button>
+        `;
         headerActions.appendChild(authBtn);
     }
 
@@ -1603,87 +1556,74 @@
         }
     }
 
-    // Initial setup calendar render
+    // Initial setup
     window.onload = function () {
         renderCalendar();
         updateAuthUI();
         checkAuthState();
     }
 
-    // Sermons filtering engine
-    function filterSermons(category) {
-        const items = document.querySelectorAll('.sermon-item');
-        
-        const buttons = ['all', 'apostolic', 'prophetic', 'leadership'];
-        buttons.forEach(btn => {
-            const el = document.getElementById(`filter-${btn}`);
-            if (btn === category) {
-                el.classList.add('bg-lm-blue', 'text-white');
-                el.classList.remove('text-lm-silver');
-            } else {
-                el.classList.remove('bg-lm-blue', 'text-white');
-                el.classList.add('text-lm-silver');
-            }
-        });
+    // Viewport listener for Hero Image adjustment
+    const heroImageElement = document.getElementById('hero-bg-image');
+    const mobileBreakpointQuery = window.matchMedia('(max-width: 767px)');
 
-        items.forEach(item => {
-            const series = item.getAttribute('data-series');
-            if (category === 'all' || series === category) {
-                item.classList.remove('hidden');
+    function handleViewportChange(event) {
+        if (heroImageElement) {
+            if (event.matches) {
+                // Viewport is 767px or less -> Force Mobile Collage
+                heroImageElement.src = 'src/assets/LMCoverPhoto-mobile.png';
             } else {
-                item.classList.add('hidden');
+                // Viewport is wider than 767px -> Restore Desktop Collage
+                heroImageElement.src = 'src/assets/LMCoverPhoto-desktop.png';
             }
-        });
+        }
+    }
+
+    // Register the change event listener
+    mobileBreakpointQuery.addEventListener('change', handleViewportChange);
+
+    // Run an initial execution check right away on page load
+    handleViewportChange(mobileBreakpointQuery);
+
+    // ===== RATE LIMIT / ERROR HANDLING =====
+
+    /**
+     * Checks if a fetch Response indicates a rate-limit or over-limit condition.
+     * Returns an error message string if rate-limited, or null if the response is fine.
+     *
+     * Cloudflare Pages Functions return:
+     *   - 429: Custom rate limit (our download endpoint)
+     *   - 530: Daily request budget exceeded (Cloudflare platform)
+     *   - 1027: Daily request budget exceeded (Cloudflare platform, internal status)
+     */
+    function getRateLimitMessage(response) {
+        if (response.status === 429) {
+            return 'Too many requests. Please wait a moment and try again.';
+        }
+        if (response.status === 530) {
+            return 'We are experiencing high traffic. Please try again later.';
+        }
+        return null;
     }
 
     /**
-     * Loads a specific episode inside the Spotify Iframe Player
-     * @param {string} spotifyEpisodeId - The Spotify 22-character unique ID for the track/episode
-     * @param {string} elementId - The DOM element ID representing the list item row
+     * Handles API response errors, including rate-limit detection.
+     * Call this from catch blocks after fetch calls.
+     * Returns true if the error was rate-limit related (caller can return early).
+     *
+     * Usage:
+     *   if (handleApiError(err, 'default message')) return;
      */
-    function loadSpotifySermon(spotifyEpisodeId, elementId) {
-        const iframe = document.getElementById('spotifyIframe');
-        const activeLabel = document.getElementById('playerActiveLabel');
-        const btnReset = document.getElementById('btnResetShow');
-        
-        // 1. Update the Spotify embed source URL dynamically
-        iframe.src = `https://open.spotify.com/embed/episode/${spotifyEpisodeId}?utm_source=generator&theme=0`;
-        
-        // 2. Adjust active UI borders inside list
-        document.querySelectorAll('.sermon-item').forEach(item => {
-            item.classList.remove('sermon-active-border');
-        });
-        document.getElementById(elementId).classList.add('sermon-active-border');
-        
-        // 3. Show "Reset to full library" toggle
-        activeLabel.innerText = "Playing Selected Sermon";
-        activeLabel.classList.add('text-lm-gold');
-        btnReset.classList.remove('hidden');
-        
-        showToast("Episode Sent to Player", "Now loading selected sermon inside the Spotify player.");
-    }
-
-    /**
-     * Resets the player back to display the full "Freedom Sermons" show archive catalog
-     */
-    function resetToFullShow() {
-        const iframe = document.getElementById('spotifyIframe');
-        const activeLabel = document.getElementById('playerActiveLabel');
-        const btnReset = document.getElementById('btnResetShow');
-
-        // Restore default podcast list feed URL
-        iframe.src = "https://open.spotify.com/embed/show/0KdGx6bE5KpdAskhmyBy04?utm_source=generator&theme=0";
-        
-        // Strip active visual borders on list
-        document.querySelectorAll('.sermon-item').forEach(item => {
-            item.classList.remove('sermon-active-border');
-        });
-
-        activeLabel.innerText = "Viewing Show Library";
-        activeLabel.classList.remove('text-lm-gold');
-        btnReset.classList.add('hidden');
-        
-        showToast("Returned to Library", "Now displaying full catalog library feed.");
+    function handleApiError(err, defaultMessage) {
+        if (err && err.status) {
+            const rateLimitMsg = getRateLimitMessage({ status: err.status });
+            if (rateLimitMsg) {
+                showToast('High Traffic', rateLimitMsg);
+                return true;
+            }
+        }
+        console.error('API Error:', err);
+        return false;
     }
 
     // Toast Control Panel Functions
