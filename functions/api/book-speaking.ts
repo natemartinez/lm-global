@@ -11,6 +11,7 @@ import { sendEmail } from './_email';
 interface Env {
   DB: D1Database;
   RESEND_API_KEY: string;
+  BOOKING_NOTIFICATIONS_EMAIL: string;
 }
 
 interface BookingPayload {
@@ -92,9 +93,9 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       body.comments?.trim() || ''
     ).run();
 
-    // Send email notification via Resend
+    // Send email notification via Resend to the configured notification address
     await sendEmail(env.RESEND_API_KEY, {
-      to: 'bookings@lmministries.org',
+      to: env.BOOKING_NOTIFICATIONS_EMAIL,
       subject: `New Speaking Invitation - ${body.organization}`,
       html: buildEmailHtml(body),
       text: buildEmailText(body),
