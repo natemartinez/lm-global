@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -390,6 +390,15 @@
 
             if (!date) {
                 showToast('Missing Date', 'Please select a date to block.');
+                return;
+            }
+
+            // Validate that the selected date is not in the past
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            const selected = new Date(date + 'T12:00:00');
+            if (selected < today) {
+                showToast('Invalid Date', 'Cannot block a date in the past. Please select today or a future date.');
                 return;
             }
 

@@ -8,12 +8,10 @@
 
 import type { PagesFunction } from '@cloudflare/workers-types';
 import { sendEmail } from '../_email';
+import { escapeHtml, isValidEmail, jsonResponse, errorResponse } from '../_helpers';
+import type { EnvWithDB, EnvWithEmail, EnvWithJWT } from '../_types';
 
-interface Env {
-  DB: D1Database;
-  RESEND_API_KEY: string;
-  JWT_SECRET: string;
-}
+interface Env extends EnvWithDB, EnvWithEmail, EnvWithJWT {}
 
 // Re-export for use by login.ts and me.ts
 export type { Env as AuthEnv };
@@ -29,10 +27,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
   if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
@@ -40,27 +35,17 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     // Validate required fields
     if (!body.email || !body.password) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Missing required fields: email, password' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Missing required fields: email, password', 400);
     }
 
     // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(body.email)) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid email format' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+    if (!isValidEmail(body.email)) {
+      return errorResponse('Invalid email format', 400);
     }
 
     // Validate password strength (min 8 chars)
     if (body.password.length < 8) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Password must be at least 8 characters' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Password must be at least 8 characters', 400);
     }
 
     // Check if email already exists
@@ -69,10 +54,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     ).bind(body.email.trim().toLowerCase()).first();
 
     if (existing) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'An account with this email already exists' }),
-        { status: 409, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('An account with this email already exists', 409);
     }
 
     // Hash the password using PBKDF2
@@ -113,21 +95,15 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     // Generate JWT
     const token = await createJWT({ userId, email, name }, env.JWT_SECRET);
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        token,
-        user: { id: userId, email, name, is_subscribed: subscribeToList },
-      }),
-      { status: 201, headers: { 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({
+      success: true,
+      token,
+      user: { id: userId, email, name, is_subscribed: subscribeToList },
+    }, 201);
 
   } catch (err) {
     console.error('Signup error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };
 
@@ -301,10 +277,6 @@ function base64urlDecode(str: string): Uint8Array {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
   while (str.length % 4) str += '=';
   return Uint8Array.from(atob(str), (c) => c.charCodeAt(0));
-}
-
-function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
 }
 
 function buildWelcomeEmailHtml(name: string): string {

@@ -6,10 +6,10 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types';
+import { jsonResponse, errorResponse } from '../_helpers';
+import type { EnvWithDB } from '../_types';
 
-interface Env {
-  DB: D1Database;
-}
+interface Env extends EnvWithDB {}
 
 interface UnsubscribePayload {
   email: string;
@@ -19,20 +19,14 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
   if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
     const body: UnsubscribePayload = await request.json();
 
     if (!body.email) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Missing required field: email' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Missing required field: email', 400);
     }
 
     const email = body.email.trim().toLowerCase();
@@ -43,17 +37,11 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     ).bind(email).first<{ id: number; is_active: number }>();
 
     if (!subscriber) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Email not found in the mailing list' }),
-        { status: 404, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Email not found in the mailing list', 404);
     }
 
     if (!subscriber.is_active) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'This email is already unsubscribed' }),
-        { status: 409, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('This email is already unsubscribed', 409);
     }
 
     // Deactivate the subscriber
@@ -68,16 +56,10 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       'UPDATE users SET is_subscribed = 0 WHERE email = ?'
     ).bind(email).run();
 
-    return new Response(
-      JSON.stringify({ success: true, message: 'Successfully unsubscribed from the mailing list' }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({ success: true, message: 'Successfully unsubscribed from the mailing list' }, 200);
 
   } catch (err) {
     console.error('Mailing unsubscribe error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };

@@ -6,9 +6,10 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types';
+import { jsonResponse, errorResponse } from './_helpers';
+import type { EnvWithDB } from './_types';
 
-interface Env {
-  DB: D1Database;
+interface Env extends EnvWithDB {
   ADMIN_SECRET: string;
 }
 
@@ -16,10 +17,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
   if (request.method !== 'GET') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
@@ -28,10 +26,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     const year = parseInt(url.searchParams.get('year') || '0', 10);
 
     if (!month || !year || month < 1 || month > 12) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid month or year parameters' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Invalid month or year parameters', 400);
     }
 
     // Calculate date range for the month
@@ -49,23 +44,17 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     const blocked = results.map((row) => row.blocked_date);
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        month,
-        year,
-        blocked,
-        // All days of the week are available; only explicitly blocked dates are restricted
-        available_days: [0, 1, 2, 3, 4, 5, 6],
-      }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({
+      success: true,
+      month,
+      year,
+      blocked,
+      // All days of the week are available; only explicitly blocked dates are restricted
+      available_days: [0, 1, 2, 3, 4, 5, 6],
+    }, 200);
 
   } catch (err) {
     console.error('Available dates error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };

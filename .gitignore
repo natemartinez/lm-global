@@ -28,3 +28,4 @@ books.dev.vars
 .dev.vars
 .wrangler
 plans/
+_worker.bundle

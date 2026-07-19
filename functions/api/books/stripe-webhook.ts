@@ -12,22 +12,16 @@
 
 import type { PagesFunction } from '@cloudflare/workers-types';
 import { sendEmail } from '../_email';
+import { escapeHtml, generateUUID, jsonResponse, errorResponse } from '../_helpers';
+import type { EnvWithDB, EnvWithEmail, EnvWithStripeWebhook, EnvWithJWT } from '../_types';
 
-interface Env {
-  DB: D1Database;
-  RESEND_API_KEY: string;
-  STRIPE_WEBHOOK_SECRET: string;
-  JWT_SECRET: string;
-}
+interface Env extends EnvWithDB, EnvWithEmail, EnvWithStripeWebhook, EnvWithJWT {}
 
 export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env, ctx } = context;
 
   if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
@@ -37,18 +31,12 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     // Verify webhook signature
     const stripeEvent = await verifyStripeWebhook(body, signature, env.STRIPE_WEBHOOK_SECRET);
     if (!stripeEvent) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid webhook signature' }),
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Invalid webhook signature', 401);
     }
 
     // Only process checkout.session.completed
     if (stripeEvent.type !== 'checkout.session.completed') {
-      return new Response(JSON.stringify({ success: true, received: true }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return jsonResponse({ success: true, received: true }, 200);
     }
 
     const session = stripeEvent.data.object as {
@@ -78,10 +66,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     if (!bookSlug || !bookIdStr) {
       console.error('Missing book metadata in Payment Link session:', sessionId);
-      return new Response(
-        JSON.stringify({ success: false, message: 'Missing book metadata' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Missing book metadata', 400);
     }
 
     const bookId = parseInt(bookIdStr, 10);
@@ -93,10 +78,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     if (!book) {
       console.error('Book not found for id:', bookId);
-      return new Response(
-        JSON.stringify({ success: false, message: 'Book not found' }),
-        { status: 404, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Book not found', 404);
     }
 
     // Idempotency check — if we've already processed this Stripe session, return 200
@@ -107,14 +89,12 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     if (existingOrder) {
       console.log('Duplicate webhook received for session:', sessionId, '- returning 200');
-      return new Response(JSON.stringify({ success: true, received: true }), {
-        status: 200,
-        headers: { 'Content-Type': 'application/json' },
-      });
+      return jsonResponse({ success: true, received: true }, 200);
     }
 
-    // Generate a unique download token
-    const downloadToken = crypto.randomUUID();
+    // Generate a unique download token using crypto.getRandomValues
+    // (crypto.randomUUID() is not available in all Workers compatibility flags)
+    const downloadToken = generateUUID();
 
     // Create the order as fulfilled (no pending state needed — payment already succeeded)
     const insertResult = await env.DB.prepare(
@@ -131,10 +111,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     if (!insertResult.meta.changes || insertResult.meta.changes === 0) {
       console.error('Failed to insert order for session:', sessionId);
-      return new Response(
-        JSON.stringify({ success: false, message: 'Failed to create order' }),
-        { status: 500, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Failed to create order', 500);
     }
 
     // Send download link email via Resend in the background.
@@ -150,17 +127,11 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       text: buildDownloadEmailText(book.title, downloadUrl, customerName),
     }, 'mailing'));
 
-    return new Response(JSON.stringify({ success: true, received: true }), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return jsonResponse({ success: true, received: true }, 200);
 
   } catch (err) {
     console.error('Stripe webhook error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };
 
@@ -214,10 +185,6 @@ async function verifyStripeWebhook(
     console.error('Webhook verification error:', err);
     return null;
   }
-}
-
-function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
 }
 
 function buildDownloadEmailHtml(bookTitle: string, downloadUrl: string, name: string): string {

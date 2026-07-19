@@ -7,12 +7,10 @@
 
 import type { PagesFunction } from '@cloudflare/workers-types';
 import { sendEmail } from './_email';
+import { escapeHtml, isValidEmail, jsonResponse, errorResponse } from './_helpers';
+import type { EnvWithDB, EnvWithEmail, EnvWithBookingNotifications } from './_types';
 
-interface Env {
-  DB: D1Database;
-  RESEND_API_KEY: string;
-  BOOKING_NOTIFICATIONS_EMAIL: string;
-}
+interface Env extends EnvWithDB, EnvWithEmail, EnvWithBookingNotifications {}
 
 interface BookingPayload {
   organization: string;
@@ -28,10 +26,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
   if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
@@ -41,30 +36,20 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     const required = ['organization', 'host', 'email', 'engagement_type', 'date', 'time'];
     for (const field of required) {
       if (!body[field as keyof BookingPayload]?.trim()) {
-        return new Response(
-          JSON.stringify({ success: false, message: `Missing required field: ${field}` }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+        return errorResponse(`Missing required field: ${field}`, 400);
       }
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(body.email)) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid email format' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+    if (!isValidEmail(body.email)) {
+      return errorResponse('Invalid email format', 400);
     }
 
     // Check for date collision in blocked_dates
     // Parse the date string like "July 19, 2026" into "2026-07-19"
     const parsedDate = new Date(body.date);
     if (isNaN(parsedDate.getTime())) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid date format' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Invalid date format', 400);
     }
     const dateStr = parsedDate.toISOString().split('T')[0]; // "2026-07-19"
 
@@ -73,10 +58,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     ).bind(dateStr).first();
 
     if (blocked) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'This date is already booked. Please select another date.' }),
-        { status: 409, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('This date is already booked. Please select another date.', 409);
     }
 
     // Insert the booking
@@ -101,23 +83,13 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       text: buildEmailText(body),
     });
 
-    return new Response(
-      JSON.stringify({ success: true, message: 'Invitation submitted successfully.', id: result.meta.last_row_id }),
-      { status: 201, headers: { 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({ success: true, message: 'Invitation submitted successfully.', id: result.meta.last_row_id }, 201);
 
   } catch (err) {
     console.error('Booking error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error. Please try again later.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error. Please try again later.', 500);
   }
 };
-
-function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
-}
 
 function buildEmailHtml(body: BookingPayload): string {
   return `

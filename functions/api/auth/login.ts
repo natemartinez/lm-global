@@ -7,11 +7,10 @@
 
 import type { PagesFunction } from '@cloudflare/workers-types';
 import { verifyPassword, createJWT } from './signup';
+import { jsonResponse, errorResponse } from '../_helpers';
+import type { EnvWithDB, EnvWithJWT } from '../_types';
 
-interface Env {
-  DB: D1Database;
-  JWT_SECRET: string;
-}
+interface Env extends EnvWithDB, EnvWithJWT {}
 
 interface LoginPayload {
   email: string;
@@ -22,20 +21,14 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
   if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
     const body: LoginPayload = await request.json();
 
     if (!body.email || !body.password) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Missing required fields: email, password' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Missing required fields: email, password', 400);
     }
 
     const email = body.email.trim().toLowerCase();
@@ -52,19 +45,13 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     }>();
 
     if (!user) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid email or password' }),
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Invalid email or password', 401);
     }
 
     // Verify password
     const valid = await verifyPassword(body.password, user.password_hash);
     if (!valid) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid email or password' }),
-        { status: 401, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Invalid email or password', 401);
     }
 
     // Update last login timestamp
@@ -78,25 +65,19 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       env.JWT_SECRET
     );
 
-    return new Response(
-      JSON.stringify({
-        success: true,
-        token,
-        user: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          is_subscribed: user.is_subscribed === 1,
-        },
-      }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({
+      success: true,
+      token,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        is_subscribed: user.is_subscribed === 1,
+      },
+    }, 200);
 
   } catch (err) {
     console.error('Login error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };

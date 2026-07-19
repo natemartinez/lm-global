@@ -7,9 +7,10 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types';
+import { jsonResponse, errorResponse } from '../_helpers';
+import type { EnvWithDB } from '../_types';
 
-interface Env {
-  DB: D1Database;
+interface Env extends EnvWithDB {
   ADMIN_SECRET: string;
 }
 
@@ -23,10 +24,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
         'SELECT id, blocked_date, reason, created_at FROM blocked_dates ORDER BY blocked_date ASC'
       ).all();
 
-      return new Response(
-        JSON.stringify({ success: true, blocked_dates: results }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
+      return jsonResponse({ success: true, blocked_dates: results }, 200);
     }
 
     // DELETE: Unblock a date by ID
@@ -35,10 +33,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       const id = parseInt(url.searchParams.get('id') || '', 10);
 
       if (isNaN(id)) {
-        return new Response(
-          JSON.stringify({ success: false, message: 'Missing or invalid id parameter' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+        return errorResponse('Missing or invalid id parameter', 400);
       }
 
       const result = await env.DB.prepare(
@@ -46,16 +41,10 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       ).bind(id).run();
 
       if (result.meta.changes === 0) {
-        return new Response(
-          JSON.stringify({ success: false, message: 'Blocked date not found' }),
-          { status: 404, headers: { 'Content-Type': 'application/json' } }
-        );
+        return errorResponse('Blocked date not found', 404);
       }
 
-      return new Response(
-        JSON.stringify({ success: true, message: 'Date unblocked successfully.' }),
-        { status: 200, headers: { 'Content-Type': 'application/json' } }
-      );
+      return jsonResponse({ success: true, message: 'Date unblocked successfully.' }, 200);
     }
 
     // POST: Block a date
@@ -63,19 +52,13 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       const body = await request.json() as { date?: string; reason?: string };
 
       if (!body.date) {
-        return new Response(
-          JSON.stringify({ success: false, message: 'Missing required field: date' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+        return errorResponse('Missing required field: date', 400);
       }
 
       // Validate date format (YYYY-MM-DD)
       const dateRegex = /^\d{4}-\d{2}-\d{2}$/;
       if (!dateRegex.test(body.date)) {
-        return new Response(
-          JSON.stringify({ success: false, message: 'Date must be in YYYY-MM-DD format' }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+        return errorResponse('Date must be in YYYY-MM-DD format', 400);
       }
 
       try {
@@ -84,30 +67,18 @@ export const onRequest: PagesFunction<Env> = async (context) => {
         ).bind(body.date, body.reason?.trim() || '').run();
       } catch (insertErr: any) {
         if (insertErr.message?.includes('UNIQUE constraint')) {
-          return new Response(
-            JSON.stringify({ success: false, message: 'This date is already blocked.' }),
-            { status: 409, headers: { 'Content-Type': 'application/json' } }
-          );
+          return errorResponse('This date is already blocked.', 409);
         }
         throw insertErr;
       }
 
-      return new Response(
-        JSON.stringify({ success: true, message: `Date ${body.date} blocked successfully.` }),
-        { status: 201, headers: { 'Content-Type': 'application/json' } }
-      );
+      return jsonResponse({ success: true, message: `Date ${body.date} blocked successfully.` }, 201);
     }
 
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
 
   } catch (err) {
     console.error('Admin block-date error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };

@@ -7,11 +7,10 @@
 
 import type { PagesFunction } from '@cloudflare/workers-types';
 import { sendEmail } from '../_email';
+import { escapeHtml, isValidEmail, jsonResponse, errorResponse } from '../_helpers';
+import type { EnvWithDB, EnvWithEmail } from '../_types';
 
-interface Env {
-  DB: D1Database;
-  RESEND_API_KEY: string;
-}
+interface Env extends EnvWithDB, EnvWithEmail {}
 
 interface SubscribePayload {
   email: string;
@@ -22,29 +21,19 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
   if (request.method !== 'POST') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
     const body: SubscribePayload = await request.json();
 
     if (!body.email) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Missing required field: email' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Missing required field: email', 400);
     }
 
     // Validate email
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(body.email)) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid email format' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+    if (!isValidEmail(body.email)) {
+      return errorResponse('Invalid email format', 400);
     }
 
     const email = body.email.trim().toLowerCase();
@@ -57,10 +46,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     if (existing) {
       if (existing.is_active) {
-        return new Response(
-          JSON.stringify({ success: false, message: 'This email is already subscribed to the mailing list' }),
-          { status: 409, headers: { 'Content-Type': 'application/json' } }
-        );
+        return errorResponse('This email is already subscribed to the mailing list', 409);
       }
 
       // Re-activate unsubscribed user
@@ -90,23 +76,13 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       text: buildConfirmationEmailText(name),
     }, 'mailing');
 
-    return new Response(
-      JSON.stringify({ success: true, message: 'Successfully subscribed to the mailing list' }),
-      { status: 201, headers: { 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({ success: true, message: 'Successfully subscribed to the mailing list' }, 201);
 
   } catch (err) {
     console.error('Mailing subscribe error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };
-
-function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
-}
 
 function buildConfirmationEmailHtml(name: string): string {
   const greeting = name ? `Dear ${escapeHtml(name)},` : 'Dear Subscriber,';

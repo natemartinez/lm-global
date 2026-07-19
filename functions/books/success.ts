@@ -9,10 +9,10 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types';
+import { escapeHtml } from '../api/_helpers';
+import type { EnvWithDB } from '../api/_types';
 
-interface Env {
-  DB: D1Database;
-}
+interface Env extends EnvWithDB {}
 
 export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
@@ -49,15 +49,11 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   });
 };
 
-function escapeHtml(text: string): string {
-  return text.replace(/&/g, '&').replace(/</g, '<').replace(/>/g, '>').replace(/"/g, '"');
-}
-
 function buildSuccessPage(bookTitle: string, orderFound: boolean, sessionId: string): string {
   const title = escapeHtml(bookTitle);
 
   return `<!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">

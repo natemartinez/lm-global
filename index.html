@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" class="dark scroll-smooth">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,7 +19,6 @@
     <!-- Tailwind Custom Configuration aligning to the Blue/Gray/Gold palette of LM Ministries logo -->
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
@@ -60,11 +59,6 @@
             border: 1px solid rgba(255, 255, 255, 0.06);
         }
 
-        .light .glass-panel {
-            background: rgba(255, 255, 255, 0.75);
-            border: 1px solid rgba(15, 76, 129, 0.1);
-        }
-
         .ambient-glow-left {
             position: absolute;
             top: -10%;
@@ -90,177 +84,10 @@
             pointer-events: none;
             z-index: 1;
         }
-
-        /* ===== LIGHT MODE COMPREHENSIVE OVERRIDES ===== */
-        /* When .light class is on <html>, override all dark-themed elements */
-
-        /* Social hub cards */
-        .light [class*="bg-lm-deep/40"] {
-            background: rgba(255,255,255,0.7) !important;
-            border-color: rgba(15,76,129,0.08) !important;
-        }
-        .light [class*="bg-lm-deep/40"] h3 {
-            color: #1e293b !important;
-        }
-        .light [class*="bg-lm-deep/40"] p {
-            color: #64748b !important;
-        }
-
-        /* Spotify embed panel */
-        .light [class*="bg-lm-slate"][class*="rounded-3xl"] {
-            background: rgba(255,255,255,0.85) !important;
-            border-color: rgba(15,76,129,0.08) !important;
-        }
-        .light [class*="bg-lm-slate"][class*="rounded-3xl"] h4 {
-            color: #1e293b !important;
-        }
-        .light [class*="bg-lm-slate"][class*="rounded-3xl"] [class*="border-b"] {
-            border-color: rgba(15,76,129,0.1) !important;
-        }
-
-        /* Books section cards */
-        .light .book-container {
-            background: rgba(255,255,255,0.8) !important;
-            border-color: rgba(15,76,129,0.08) !important;
-        }
-        .light .book-container h3 {
-            color: #1e293b !important;
-        }
-        .light .book-container p {
-            color: #64748b !important;
-        }
-        .light .book-container [class*="text-lm-silver"] {
-            color: #64748b !important;
-        }
-
-        /* Booking calendar panel */
-        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] {
-            background: rgba(255,255,255,0.85) !important;
-            border-color: rgba(15,76,129,0.08) !important;
-        }
-        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] h3 {
-            color: #1e293b !important;
-        }
-        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] [class*="text-lm-silver"] {
-            color: #64748b !important;
-        }
-        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] [class*="border-t"],
-        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] [class*="border-b"] {
-            border-color: rgba(15,76,129,0.1) !important;
-        }
-        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] button[class*="bg-white"] {
-            background: rgba(15,76,129,0.06) !important;
-            color: #64748b !important;
-        }
-        .light [class*="bg-lm-slate/40"][class*="rounded-3xl"] button[class*="bg-white"]:hover {
-            color: #1e293b !important;
-        }
-
-        /* Booking form panel */
-        .light [class*="bg-lm-slate/30"][class*="rounded-3xl"] {
-            background: rgba(255,255,255,0.8) !important;
-            border-color: rgba(15,76,129,0.08) !important;
-        }
-
-        /* Form inputs */
-        .light input[class*="bg-lm-deep"],
-        .light select[class*="bg-lm-deep"],
-        .light textarea[class*="bg-lm-deep"] {
-            background: #ffffff !important;
-            border-color: rgba(15,76,129,0.15) !important;
-            color: #1e293b !important;
-        }
-        .light input[class*="bg-lm-deep"]::placeholder,
-        .light textarea[class*="bg-lm-deep"]::placeholder {
-            color: #94a3b8 !important;
-        }
-
-        /* Calendar days */
-        .light .calendar-day:not(.empty-day) {
-            color: #1e293b !important;
-        }
-        .light .calendar-day.empty-day {
-            color: transparent !important;
-        }
-
-        /* Time slot buttons */
-        .light .slot-btn {
-            background: rgba(255,255,255,0.7) !important;
-            border-color: rgba(15,76,129,0.15) !important;
-            color: #1e293b !important;
-        }
-        .light .slot-btn:hover {
-            border-color: #0F4C81 !important;
-            background: rgba(15,76,129,0.08) !important;
-        }
-
-        /* Footer */
-        .light footer[class*="bg-lm-deep"] {
-            background: #f1f5f9 !important;
-            border-color: rgba(15,76,129,0.08) !important;
-        }
-        .light footer [class*="text-white"] {
-            color: #1e293b !important;
-        }
-        .light footer [class*="text-lm-silver"] {
-            color: #64748b !important;
-        }
-        .light footer [class*="bg-white/5"] {
-            background: rgba(15,76,129,0.08) !important;
-        }
-        .light footer [class*="border-white/10"] {
-            border-color: rgba(15,76,129,0.1) !important;
-        }
-
-        /* Toast notification */
-        .light #toastNotification {
-            background: #ffffff !important;
-            border-color: rgba(15,76,129,0.2) !important;
-        }
-        .light #toastNotification h4 {
-            color: #1e293b !important;
-        }
-        .light #toastNotification [class*="text-lm-silver"] {
-            color: #64748b !important;
-        }
-
-        /* Profile badge */
-        .light [class*="absolute"][class*="-bottom-4"][class*="right-4"][class*="bg-lm-slate"] {
-            background: rgba(255,255,255,0.9) !important;
-            border-color: rgba(15,76,129,0.1) !important;
-        }
-        .light [class*="absolute"][class*="-bottom-4"][class*="right-4"][class*="bg-lm-slate"] [class*="text-white"] {
-            color: #1e293b !important;
-        }
-
-        /* Section backgrounds */
-        .light section[class*="bg-lm-slate/20"] {
-            background: rgba(241,245,249,0.6) !important;
-        }
-        .light section[class*="bg-lm-deep"] {
-            background: #f8fafc !important;
-        }
-        .light section[class*="bg-lm-slate/10"] {
-            background: rgba(241,245,249,0.4) !important;
-        }
-
-        /* Scroll down arrow */
-        .light svg[class*="text-white/40"] {
-            color: rgba(15,76,129,0.3) !important;
-        }
-        .light svg[class*="text-white/40"]:hover {
-            color: #0F4C81 !important;
-        }
-
         /* Calendar Hover and Interactive States */
         .calendar-day:not(.empty-day):hover {
             background-color: rgba(15, 76, 129, 0.2);
             border-color: #0F4C81;
-        }
-
-        /* Light mode: "Listen on Spotify" CTA */
-        .light a[class*="bg-green-600"] {
-            color: #ffffff !important;
         }
 
         /* Book 3D Hover effect with shadows */
@@ -406,18 +233,6 @@
             margin-bottom: 12px;
             display: none;
         }
-        .light .modal-content {
-            background: #ffffff;
-            border-color: rgba(15,76,129,0.15);
-        }
-        .light .modal-content h2 { color: #0F4C81; }
-        .light .modal-content input {
-            background: #f8fafc;
-            border-color: rgba(15,76,129,0.15);
-            color: #1e293b;
-        }
-        .light .modal-content .checkbox-row label { color: #1e293b; }
-
         /* ===== MAILING LIST SECTION ===== */
         .mailing-input {
             background: rgba(11, 13, 19, 0.6);
@@ -433,73 +248,9 @@
         }
         .mailing-input:focus { border-color: #0F4C81; }
         .mailing-input::placeholder { color: #64748b; }
-        .light .mailing-input {
-            background: rgba(255,255,255,0.8);
-            border-color: rgba(15,76,129,0.15);
-            color: #1e293b;
-        }
-
-        /* Light mode: mailing list section */
-        .light #mailing {
-            background: rgba(241,245,249,0.5) !important;
-        }
-        .light #mailing h2 {
-            color: #1e293b !important;
-        }
-        .light #mailing p {
-            color: #64748b !important;
-        }
-        .light #mailing .mailing-input {
-            background: #ffffff !important;
-            border-color: rgba(15,76,129,0.15) !important;
-            color: #1e293b !important;
-        }
-        .light #mailing .mailing-input::placeholder {
-            color: #94a3b8 !important;
-        }
-        .light #mailing #mailingStatus.text-green-400 {
-            color: #16a34a !important;
-        }
-        .light #mailing #mailingStatus.text-red-400 {
-            color: #dc2626 !important;
-        }
-
-        /* Light mode: modal overlays */
-        .light .modal-overlay {
-            background: rgba(255,255,255,0.8) !important;
-        }
-        .light .modal-content {
-            background: #ffffff !important;
-            border-color: rgba(15,76,129,0.15) !important;
-        }
-        .light .modal-content h2 {
-            color: #0F4C81 !important;
-        }
-        .light .modal-content .subtitle {
-            color: #64748b !important;
-        }
-        .light .modal-content input[type="email"],
-        .light .modal-content input[type="password"],
-        .light .modal-content input[type="text"] {
-            background: #f8fafc !important;
-            border-color: rgba(15,76,129,0.15) !important;
-            color: #1e293b !important;
-        }
-        .light .modal-content .checkbox-row label {
-            color: #1e293b !important;
-        }
-        .light .modal-close {
-            color: #64748b !important;
-        }
-        .light .modal-close:hover {
-            color: #1e293b !important;
-        }
-        .light .modal-content .switch-link {
-            color: #64748b !important;
-        }
     </style>
 </head>
-<body class="bg-lm-deep text-gray-200 font-sans antialiased selection:bg-lm-blue/30 selection:text-white transition-colors duration-300 dark:bg-lm-deep light:bg-gray-50 light:text-gray-800">
+<body class="bg-lm-deep text-gray-200 font-sans antialiased selection:bg-lm-blue/30 selection:text-white">
 
 <header class="fixed top-0 left-0 w-full z-50 transition-all duration-300 bg-transparent py-4" id="mainHeader">
     <div class="max-w-7xl mx-auto px-6 md:px-12 flex items-center justify-between">
@@ -510,18 +261,11 @@
                 <!-- Site header logo -->
                 <img src="src/assets/site-header-logo.png" alt="LM Ministries Logo" class="w-full h-full object-contain">
             </div>
-            <h2 class="font-serif text-xl font-bold text-white dark:text-white light:text-gray-900 whitespace-nowrap">LM Global</h2>
+            <h2 class="font-serif text-xl font-bold text-white whitespace-nowrap">LM Global</h2>
         </a>
 
-        <!-- Right Side: Clean theme adjustment and Direct CTA link to Speaking booking -->
+        <!-- Right Side: Direct CTA link to Speaking booking -->
         <div class="flex items-center gap-4">
-            
-            <!-- Dark / Light Theme Mode Switcher -->
-            <button onclick="toggleTheme()" class="p-2.5 text-white/90 dark:text-white/90 light:text-gray-700 hover:text-lm-gold rounded-full hover:bg-white/5 transition-all" aria-label="Toggle Theme Mode">
-                <svg id="themeIcon" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-                </svg>
-            </button>
 
             <!-- Preaching speaking link -->
             <a href="#booking" class="inline-flex items-center px-5 py-2 bg-lm-blue hover:bg-lm-blueHover text-sm font-semibold text-white rounded-full shadow-lg shadow-lm-blue/10 hover:scale-[1.03] transition-all">
@@ -554,7 +298,7 @@
             Welcome to <br> LM Global Ministries
         </h1>
 
-        <p class="max-w-2xl mx-auto text-sm md:text-lg text-white/80 dark:text-white/80 light:text-gray-200 leading-relaxed mb-10 drop-shadow-sm">
+        <p class="max-w-2xl mx-auto text-sm md:text-lg text-white/80 leading-relaxed mb-10 drop-shadow-sm">
             Raising a global generation of apostolic leaders. Apostle Lee Martinez carries a heavy mantle to ignite global believers, align strategic leadership, and unlock the prophetic voice across the nations.
         </p>
 
@@ -574,7 +318,7 @@
 
         <!-- Floating Welcome details stylized as a floating platform (Active Social Hub) -->
         <div class="max-w-5xl mx-auto glass-panel rounded-2xl p-6 md:p-8 shadow-2xl relative">
-            <h2 class="text-xs tracking-[0.25em] uppercase text-white/60 dark:text-white/60 light:text-gray-800 font-bold mb-6">
+            <h2 class="text-xs tracking-[0.25em] uppercase text-white/60 font-bold mb-6">
                 Active Social Hub
             </h2>
 
@@ -649,7 +393,7 @@
             
             <div class="lg:col-span-6 flex flex-col gap-4">
                 <span class="text-xs tracking-[0.25em] uppercase text-lm-blue font-bold">THE MAN & THE MISSION</span>
-                <h2 class="font-serif text-4xl md:text-5xl text-white dark:text-white light:text-gray-900 font-bold leading-tight">
+                <h2 class="font-serif text-4xl md:text-5xl text-white font-bold leading-tight">
                     Apostle Lee Martinez
                 </h2>
                 <p class="text-lm-silver text-sm md:text-base leading-relaxed mt-2">
@@ -688,7 +432,7 @@
         <div class="flex flex-col md:flex-row items-start md:items-end justify-between mb-16">
             <div>
                 <span class="text-xs tracking-[0.25em] uppercase text-lm-blue font-bold">LATEST MEDIA BROADCASTS</span>
-                <h2 class="font-serif text-4xl md:text-5xl text-white dark:text-white light:text-gray-900 font-bold mt-2">Freedom Sermons</h2>
+                <h2 class="font-serif text-4xl md:text-5xl text-white font-bold mt-2">Freedom Sermons</h2>
                 <p class="text-lm-silver text-sm mt-2">Explore weekly audio broadcasts and apostolic declarations directly on Spotify.</p>
             </div>
         </div>
@@ -749,7 +493,7 @@
         
         <div class="text-center max-w-2xl mx-auto mb-16">
             <span class="text-xs tracking-[0.25em] uppercase text-lm-blue font-bold">APOSTOLIC LITERATURE</span>
-            <h2 class="font-serif text-4xl md:text-5xl text-white dark:text-white light:text-gray-900 font-bold mt-2">Publications & Books</h2>
+            <h2 class="font-serif text-4xl md:text-5xl text-white font-bold mt-2">Publications & Books</h2>
             <p class="text-lm-silver text-sm mt-4">Equip your spirit with powerful apostolic blueprints written to awaken divine authority, break spiritual strongholds, and activate your functional kingdom placement.</p>
         </div>
 
@@ -813,7 +557,7 @@
         
         <div class="text-center max-w-2xl mx-auto mb-16">
             <span class="text-xs tracking-[0.25em] uppercase text-lm-blue font-bold">INVITE APOSTLE LEE</span>
-            <h2 class="font-serif text-4xl md:text-5xl text-white dark:text-white light:text-gray-900 font-bold mt-2">Speaking invitations</h2>
+            <h2 class="font-serif text-4xl md:text-5xl text-white font-bold mt-2">Speaking invitations</h2>
             <p class="text-lm-silver text-sm mt-4">Select an active date from the ministry calendar below to request Apostle Lee Martinez for preaching engagements, leadership training, or theological sessions.</p>
         </div>
 
@@ -1000,7 +744,7 @@
                 <img src="src/assets/site-header-logo.png" alt="LM Logo Mini" class="w-full h-full object-contain">
             </div>
             <div>
-                <span class="font-serif text-sm font-bold text-white block">LM Ministries</span>
+                <span class="font-serif text-sm font-bold text-white block">LM Global Ministries</span>
                 <span class="text-[8px] text-lm-silver tracking-widest uppercase block font-semibold">Apostle Lee Martinez</span>
             </div>
         </div>
@@ -1041,28 +785,6 @@
 </div>
 
 <script>
-    // Theme Mode Toggle
-    function toggleTheme() {
-        const html = document.documentElement;
-        const themeIcon = document.getElementById('themeIcon');
-        
-        if (html.classList.contains('dark')) {
-            html.classList.remove('dark');
-            html.classList.add('light');
-            themeIcon.innerHTML = `
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
-            `;
-            showToast("Visual Interface Updated", "Light mode display set.");
-        } else {
-            html.classList.remove('light');
-            html.classList.add('dark');
-            themeIcon.innerHTML = `
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
-            `;
-            showToast("Visual Interface Updated", "Dark mode display set.");
-        }
-    }
-
     // Scroll styling changes to Header
     window.addEventListener('scroll', () => {
         const header = document.getElementById('mainHeader');
@@ -1086,7 +808,13 @@
     const DEFAULT_AVAILABLE_DAYS = [0, 1, 2, 3, 4, 5, 6];
     let availableDaysOfWeek = DEFAULT_AVAILABLE_DAYS;
 
-    // Fetch blocked dates for a given month from the API
+    /**
+     * Fetch blocked dates for a given month from the API.
+     * Results are cached in blockedDatesCache to avoid redundant requests.
+     * @param {number} year
+     * @param {number} month - 1-based month number
+     * @returns {Promise<string[]>} Array of blocked date strings in "YYYY-MM-DD" format
+     */
     async function fetchBlockedDates(year, month) {
         const cacheKey = `${year}-${String(month).padStart(2, '0')}`;
         if (blockedDatesCache[cacheKey]) {
@@ -1108,6 +836,13 @@
         return [];
     }
 
+    /**
+     * Check if a specific day is available for booking.
+     * @param {number} year
+     * @param {number} month - 0-based month index
+     * @param {number} day - Day of the month (1-31)
+     * @returns {boolean}
+     */
     function isDayAvailable(year, month, day) {
         const date = new Date(year, month, day);
         const dayOfWeek = date.getDay();
@@ -1122,6 +857,11 @@
         return !blocked.includes(dateStr);
     }
 
+    /**
+     * Render the booking calendar for the current month/year.
+     * Fetches blocked dates from the API and renders day cells.
+     * @returns {Promise<void>}
+     */
     async function renderCalendar() {
         const daysGrid = document.getElementById('calendarDaysGrid');
         const monthTitle = document.getElementById('calendarMonthTitle');
@@ -1209,6 +949,10 @@
         }
     }
 
+    /**
+     * Handle date selection in the booking calendar.
+     * @param {number} day - Day of the month (1-31)
+     */
     function selectBookingDate(day) {
         selectedDayValue = day;
         const formattedDate = `${monthNames[currentMonthIndex]} ${day}, ${currentYear}`;
@@ -1230,6 +974,10 @@
         showToast("Date Selected", `Pick a time slot for ${formattedDate}.`);
     }
 
+    /**
+     * Handle time slot selection for the booking form.
+     * @param {string} time - Time string (e.g., "2:00 PM CDT")
+     */
     function selectTimeSlot(time) {
         document.getElementById('bookingFormTime').value = time;
         
@@ -1270,6 +1018,10 @@
         "There's Levels To This": "theres-levels-to-this"
     };
 
+    /**
+     * Open the purchase modal for a specific book.
+     * @param {string} bookName - Display name of the book
+     */
     function openPurchaseModal(bookName) {
         const slug = BOOK_SLUGS[bookName];
         if (!slug) {
@@ -1325,7 +1077,11 @@
                 btn.innerHTML = '<i class="fa-solid fa-lock"></i> Proceed to Checkout';
             }
         } catch (err) {
-            console.error('Purchase error:', err);
+            if (handleApiError(err, 'Network error. Please check your connection.')) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-lock"></i> Proceed to Checkout';
+                return;
+            }
             errorEl.textContent = 'Network error. Please check your connection.';
             errorEl.style.display = 'block';
             btn.disabled = false;
@@ -1336,6 +1092,10 @@
     // ===== AUTH FUNCTIONS =====
     let currentUser = null;
 
+    /**
+     * Switch between signup and login views in the auth modal.
+     * @param {'signup'|'login'} view - The view to show
+     */
     function showAuthView(view) {
         document.getElementById('authSignupView').style.display = view === 'signup' ? 'block' : 'none';
         document.getElementById('authLoginView').style.display = view === 'login' ? 'block' : 'none';
@@ -1343,11 +1103,16 @@
         document.getElementById('loginError').style.display = 'none';
     }
 
+    /** Open the authentication modal (defaults to signup view). */
     function openAuthModal() {
         showAuthView('signup');
         document.getElementById('authModal').classList.add('active');
     }
 
+    /**
+     * Close a modal by its element ID.
+     * @param {string} id - The element ID of the modal
+     */
     function closeModal(id) {
         document.getElementById(id).classList.remove('active');
     }
@@ -1396,7 +1161,11 @@
                 btn.innerHTML = 'Create Account';
             }
         } catch (err) {
-            console.error('Signup error:', err);
+            if (handleApiError(err, 'Network error. Please check your connection.')) {
+                btn.disabled = false;
+                btn.innerHTML = 'Create Account';
+                return;
+            }
             errorEl.textContent = 'Network error. Please check your connection.';
             errorEl.style.display = 'block';
             btn.disabled = false;
@@ -1446,7 +1215,11 @@
                 btn.innerHTML = 'Sign In';
             }
         } catch (err) {
-            console.error('Login error:', err);
+            if (handleApiError(err, 'Network error. Please check your connection.')) {
+                btn.disabled = false;
+                btn.innerHTML = 'Sign In';
+                return;
+            }
             errorEl.textContent = 'Network error. Please check your connection.';
             errorEl.style.display = 'block';
             btn.disabled = false;
@@ -1454,6 +1227,7 @@
         }
     }
 
+    /** Sign the current user out and clear the auth token. */
     function logout() {
         localStorage.removeItem('lm_auth_token');
         currentUser = null;
@@ -1461,6 +1235,10 @@
         showToast('Signed Out', 'You have been signed out.');
     }
 
+    /**
+     * Update the header UI to reflect the current authentication state.
+     * Shows user name and sign-out button if logged in.
+     */
     function updateAuthUI() {
         const headerActions = document.querySelector('#mainHeader .flex.items-center.gap-4');
         if (!headerActions) return;
@@ -1480,6 +1258,12 @@
         headerActions.appendChild(authBtn);
     }
 
+    /**
+     * Check if the user has a valid auth token on page load.
+     * If valid, populates currentUser and updates the header UI.
+     * If invalid, clears the stored token.
+     * @returns {Promise<void>}
+     */
     async function checkAuthState() {
         const token = localStorage.getItem('lm_auth_token');
         if (!token) return;
@@ -1528,7 +1312,11 @@
                 status.className = 'text-xs text-red-400 mt-4';
             }
         } catch (err) {
-            console.error('Mailing subscribe error:', err);
+            if (handleApiError(err, 'Network error. Please check your connection.')) {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Subscribe';
+                return;
+            }
             status.textContent = 'Network error. Please check your connection.';
             status.className = 'text-xs text-red-400 mt-4';
         } finally {
@@ -1587,8 +1375,9 @@
                 showToast("Submission Failed", data.message || "Something went wrong. Please try again.");
             }
         } catch (err) {
-            console.error('Booking submission error:', err);
-            showToast("Network Error", "Could not reach the server. Please check your connection and try again.");
+            if (!handleApiError(err, "Could not reach the server. Please check your connection and try again.")) {
+                showToast("Network Error", "Could not reach the server. Please check your connection and try again.");
+            }
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = originalText;
@@ -1596,11 +1385,11 @@
     }
 
     // Initial setup
-    window.onload = function () {
+    window.addEventListener('load', function () {
         renderCalendar();
         updateAuthUI();
         checkAuthState();
-    }
+    });
 
     // Viewport listener for Hero Image adjustment
     const heroImageElement = document.getElementById('hero-bg-image');
@@ -1666,6 +1455,13 @@
     }
 
     // Toast Control Panel Functions
+
+    /**
+     * Show a toast notification with a title and message.
+     * Auto-hides after 4 seconds.
+     * @param {string} title - The bold title text
+     * @param {string} msg - The body message text
+     */
     function showToast(title, msg) {
         const toast = document.getElementById('toastNotification');
         document.getElementById('toastTitle').innerText = title;
@@ -1679,6 +1475,7 @@
         }, 4000);
     }
 
+    /** Hide the toast notification (slide down + fade out). */
     function hideToast() {
         const toast = document.getElementById('toastNotification');
         toast.classList.add('translate-y-12', 'opacity-0', 'pointer-events-none');

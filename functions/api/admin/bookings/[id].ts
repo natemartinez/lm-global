@@ -6,9 +6,10 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types';
+import { jsonResponse, errorResponse } from '../../_helpers';
+import type { EnvWithDB } from '../../_types';
 
-interface Env {
-  DB: D1Database;
+interface Env extends EnvWithDB {
   ADMIN_SECRET: string;
 }
 
@@ -16,29 +17,20 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env, params } = context;
 
   if (request.method !== 'PATCH') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
     const id = parseInt(params.id as string, 10);
     if (isNaN(id)) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid booking ID' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Invalid booking ID', 400);
     }
 
     const body = await request.json() as { status?: string };
     const validStatuses = ['Approved', 'Declined', 'Pending'];
 
     if (!body.status || !validStatuses.includes(body.status)) {
-      return new Response(
-        JSON.stringify({ success: false, message: `Status must be one of: ${validStatuses.join(', ')}` }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse(`Status must be one of: ${validStatuses.join(', ')}`, 400);
     }
 
     // Check the booking exists
@@ -47,10 +39,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     ).bind(id).first<{ id: number; event_date: string }>();
 
     if (!booking) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Booking not found' }),
-        { status: 404, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Booking not found', 404);
     }
 
     // Update the status
@@ -72,16 +61,10 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       ).bind(dateStr, `Approved booking #${id}`).run();
     }
 
-    return new Response(
-      JSON.stringify({ success: true, message: `Booking #${id} ${body.status.toLowerCase()}.` }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({ success: true, message: `Booking #${id} ${body.status.toLowerCase()}.` }, 200);
 
   } catch (err) {
     console.error('Admin booking update error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };

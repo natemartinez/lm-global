@@ -6,9 +6,10 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types';
+import { jsonResponse } from './api/_helpers';
+import type { EnvWithDB } from './api/_types';
 
-interface Env {
-  DB: D1Database;
+interface Env extends EnvWithDB {
   ADMIN_SECRET: string;
 }
 
@@ -34,10 +35,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     const expectedSecret = context.env.ADMIN_SECRET;
 
     if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.slice(7) !== expectedSecret) {
-      return new Response(JSON.stringify({ success: false, message: 'Unauthorized' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
-      });
+      return jsonResponse({ success: false, message: 'Unauthorized' }, 401);
     }
   }
 

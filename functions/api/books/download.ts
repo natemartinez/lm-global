@@ -6,20 +6,16 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types';
+import { errorResponse } from '../_helpers';
+import type { EnvWithDB, EnvWithR2 } from '../_types';
 
-interface Env {
-  DB: D1Database;
-  BOOKS_BUCKET: R2Bucket;
-}
+interface Env extends EnvWithDB, EnvWithR2 {}
 
 export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env, ctx } = context;
 
   if (request.method !== 'GET') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
@@ -27,10 +23,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     const token = url.searchParams.get('token');
 
     if (!token) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Missing download token' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Missing download token', 400);
     }
 
     // Rate limiting — prevent brute-force bots from cycling through tokens.
@@ -71,26 +64,17 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     }>();
 
     if (!order) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Invalid download token' }),
-        { status: 404, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Invalid download token', 404);
     }
 
     // Check order status
     if (order.status !== 'fulfilled') {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Order has not been fulfilled yet' }),
-        { status: 403, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Order has not been fulfilled yet', 403);
     }
 
     // Check download limit (max 5 downloads)
     if (order.download_count >= 5) {
-      return new Response(
-        JSON.stringify({ success: false, message: 'Download limit reached (max 5 downloads). Please contact support.' }),
-        { status: 403, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Download limit reached (max 5 downloads). Please contact support.', 403);
     }
 
     // Check expiry (7 days from fulfillment)
@@ -99,10 +83,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
       const now = new Date();
       const daysSinceFulfillment = (now.getTime() - fulfilledDate.getTime()) / (1000 * 60 * 60 * 24);
       if (daysSinceFulfillment > 7) {
-        return new Response(
-          JSON.stringify({ success: false, message: 'Download link has expired (valid for 7 days). Please contact support.' }),
-          { status: 410, headers: { 'Content-Type': 'application/json' } }
-        );
+        return errorResponse('Download link has expired (valid for 7 days). Please contact support.', 410);
       }
     }
 
@@ -110,10 +91,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
     const pdfObject = await env.BOOKS_BUCKET.get(order.pdf_path);
     if (!pdfObject) {
       console.error('PDF not found in R2:', order.pdf_path);
-      return new Response(
-        JSON.stringify({ success: false, message: 'Book file not found. Please contact support.' }),
-        { status: 404, headers: { 'Content-Type': 'application/json' } }
-      );
+      return errorResponse('Book file not found. Please contact support.', 404);
     }
 
     // Increment download count
@@ -135,9 +113,6 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
   } catch (err) {
     console.error('Download error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };

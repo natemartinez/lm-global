@@ -6,9 +6,10 @@
  */
 
 import type { PagesFunction } from '@cloudflare/workers-types';
+import { jsonResponse, errorResponse } from '../_helpers';
+import type { EnvWithDB } from '../_types';
 
-interface Env {
-  DB: D1Database;
+interface Env extends EnvWithDB {
   ADMIN_SECRET: string;
 }
 
@@ -16,10 +17,7 @@ export const onRequest: PagesFunction<Env> = async (context) => {
   const { request, env } = context;
 
   if (request.method !== 'GET') {
-    return new Response(JSON.stringify({ success: false, message: 'Method not allowed' }), {
-      status: 405,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return errorResponse('Method not allowed', 405);
   }
 
   try {
@@ -38,16 +36,10 @@ export const onRequest: PagesFunction<Env> = async (context) => {
 
     const { results } = await env.DB.prepare(query).bind(...bindings).all();
 
-    return new Response(
-      JSON.stringify({ success: true, bookings: results }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({ success: true, bookings: results }, 200);
 
   } catch (err) {
     console.error('Admin bookings error:', err);
-    return new Response(
-      JSON.stringify({ success: false, message: 'Internal server error' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return errorResponse('Internal server error', 500);
   }
 };
